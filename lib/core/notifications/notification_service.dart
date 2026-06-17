@@ -78,19 +78,40 @@ class NotificationService {
     _initialized = true;
   }
 
+  /// Returns true when the OS has authorised notifications. On iOS we ask
+  /// the system UNUserNotificationCenter directly through
+  /// flutter_local_notifications — running both that and permission_handler's
+  /// `Permission.notification.request()` produced inconsistent answers
+  /// (e.g. iOS reporting "Allowed" while permission_handler returned `denied`).
+  /// One source of truth, one return value.
   Future<bool> requestPermissions() async {
-    final notifStatus = await Permission.notification.request();
     if (defaultTargetPlatform == TargetPlatform.iOS) {
       final ios = plugin.resolvePlatformSpecificImplementation<
           IOSFlutterLocalNotificationsPlugin>();
-      await ios?.requestPermissions(alert: true, badge: true, sound: true);
+      final granted = await ios?.requestPermissions(
+            alert: true,
+            badge: true,
+            sound: true,
+          ) ??
+          false;
+      if (granted) return true;
+      // requestPermissions returns false both when the user explicitly denies
+      // and when iOS already has a "denied" decision cached. Fall back to a
+      // direct check so users who flipped notifications back on in Settings
+      // see the right state.
+      final checked = await ios?.checkPermissions();
+      return checked?.isEnabled ?? false;
     }
     if (defaultTargetPlatform == TargetPlatform.android) {
       final android = plugin.resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>();
-      await android?.requestNotificationsPermission();
+      final granted = await android?.requestNotificationsPermission() ?? false;
       await android?.requestExactAlarmsPermission();
+      return granted;
     }
-    return notifStatus.isGranted;
+    // Other platforms — fall back to permission_handler so we still return
+    // a meaningful boolean.
+    final status = await Permission.notification.request();
+    return status.isGranted;
   }
 }
