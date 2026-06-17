@@ -230,4 +230,106 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get emptyTagList => 'Noch nichts angelegt. Tippe rechts unten auf +.';
+
+  @override
+  String get exportTitle => 'Daten exportieren / importieren';
+
+  @override
+  String get exportSection => 'Exportieren';
+
+  @override
+  String get exportJson => 'JSON (vollständig)';
+
+  @override
+  String get exportJsonDescription => 'Backup für Re-Import oder andere Apps.';
+
+  @override
+  String get exportCsv => 'CSV';
+
+  @override
+  String get exportCsvDescription =>
+      'Tabellen-Format für Excel, Numbers, Google Sheets.';
+
+  @override
+  String get exportPdf => 'PDF-Report';
+
+  @override
+  String get exportPdfDescription =>
+      'Lesbarer Monats-Report, z.B. für Arztbesuche.';
+
+  @override
+  String get exportPdfAllTime => 'Gesamter Zeitraum';
+
+  @override
+  String get importSection => 'Importieren';
+
+  @override
+  String get importJson => 'JSON-Backup importieren';
+
+  @override
+  String get importJsonDescription => 'Datei auswählen und Daten übernehmen.';
+
+  @override
+  String get importModeTitle => 'Wie importieren?';
+
+  @override
+  String get importModeMerge => 'Zusammenführen';
+
+  @override
+  String get importModeMergeDescription =>
+      'Fehlende Tage werden ergänzt, bestehende bleiben unverändert.';
+
+  @override
+  String get importModeReplace => 'Alles ersetzen';
+
+  @override
+  String get importModeReplaceDescription =>
+      'Vorhandene Daten werden gelöscht. Nicht rückgängig zu machen!';
+
+  @override
+  String importDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count neue Einträge',
+      one: '1 neuer Eintrag',
+      zero: 'keine neuen Einträge',
+    );
+    return 'Import abgeschlossen — $_temp0 hinzugefügt.';
+  }
+
+  @override
+  String importFailed(String error) {
+    return 'Import fehlgeschlagen: $error';
+  }
+
+  @override
+  String get exporting => 'Wird erstellt …';
+
+  @override
+  String get pdfMonthHeader => 'Kopfschmerz-Report';
+
+  @override
+  String get pdfStatsHeading => 'Übersicht';
+
+  @override
+  String get pdfStatsTotal => 'Tage mit Eintrag';
+
+  @override
+  String get pdfStatsGreen => 'Leicht';
+
+  @override
+  String get pdfStatsYellow => 'Mittel';
+
+  @override
+  String get pdfStatsRed => 'Stark';
+
+  @override
+  String get pdfStatsNone => 'Ohne Kopfschmerz';
+
+  @override
+  String get pdfEntriesHeading => 'Einträge';
+
+  @override
+  String get pdfFooter => 'Generiert von KopfAmpel';
 }

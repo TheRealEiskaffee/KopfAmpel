@@ -75,5 +75,44 @@
   "renameTagTitle": "Umbenennen",
   "deleteTagTitle": "Löschen?",
   "deleteTagBody": "Wenn du das Tag löschst, verschwindet es auch aus Einträgen, die es nutzen.",
-  "emptyTagList": "Noch nichts angelegt. Tippe rechts unten auf +."
+  "emptyTagList": "Noch nichts angelegt. Tippe rechts unten auf +.",
+  "exportTitle": "Daten exportieren / importieren",
+  "exportSection": "Exportieren",
+  "exportJson": "JSON (vollständig)",
+  "exportJsonDescription": "Backup für Re-Import oder andere Apps.",
+  "exportCsv": "CSV",
+  "exportCsvDescription": "Tabellen-Format für Excel, Numbers, Google Sheets.",
+  "exportPdf": "PDF-Report",
+  "exportPdfDescription": "Lesbarer Monats-Report, z.B. für Arztbesuche.",
+  "exportPdfAllTime": "Gesamter Zeitraum",
+  "importSection": "Importieren",
+  "importJson": "JSON-Backup importieren",
+  "importJsonDescription": "Datei auswählen und Daten übernehmen.",
+  "importModeTitle": "Wie importieren?",
+  "importModeMerge": "Zusammenführen",
+  "importModeMergeDescription": "Fehlende Tage werden ergänzt, bestehende bleiben unverändert.",
+  "importModeReplace": "Alles ersetzen",
+  "importModeReplaceDescription": "Vorhandene Daten werden gelöscht. Nicht rückgängig zu machen!",
+  "importDone": "Import abgeschlossen — {count, plural, =0{keine neuen Einträge} =1{1 neuer Eintrag} other{{count} neue Einträge}} hinzugefügt.",
+  "@importDone": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "importFailed": "Import fehlgeschlagen: {error}",
+  "@importFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "exporting": "Wird erstellt …",
+  "pdfMonthHeader": "Kopfschmerz-Report",
+  "pdfStatsHeading": "Übersicht",
+  "pdfStatsTotal": "Tage mit Eintrag",
+  "pdfStatsGreen": "Leicht",
+  "pdfStatsYellow": "Mittel",
+  "pdfStatsRed": "Stark",
+  "pdfStatsNone": "Ohne Kopfschmerz",
+  "pdfEntriesHeading": "Einträge",
+  "pdfFooter": "Generiert von KopfAmpel"
 }

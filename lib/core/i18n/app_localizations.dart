@@ -523,6 +523,180 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Noch nichts angelegt. Tippe rechts unten auf +.'**
   String get emptyTagList;
+
+  /// No description provided for @exportTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Daten exportieren / importieren'**
+  String get exportTitle;
+
+  /// No description provided for @exportSection.
+  ///
+  /// In de, this message translates to:
+  /// **'Exportieren'**
+  String get exportSection;
+
+  /// No description provided for @exportJson.
+  ///
+  /// In de, this message translates to:
+  /// **'JSON (vollständig)'**
+  String get exportJson;
+
+  /// No description provided for @exportJsonDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Backup für Re-Import oder andere Apps.'**
+  String get exportJsonDescription;
+
+  /// No description provided for @exportCsv.
+  ///
+  /// In de, this message translates to:
+  /// **'CSV'**
+  String get exportCsv;
+
+  /// No description provided for @exportCsvDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Tabellen-Format für Excel, Numbers, Google Sheets.'**
+  String get exportCsvDescription;
+
+  /// No description provided for @exportPdf.
+  ///
+  /// In de, this message translates to:
+  /// **'PDF-Report'**
+  String get exportPdf;
+
+  /// No description provided for @exportPdfDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Lesbarer Monats-Report, z.B. für Arztbesuche.'**
+  String get exportPdfDescription;
+
+  /// No description provided for @exportPdfAllTime.
+  ///
+  /// In de, this message translates to:
+  /// **'Gesamter Zeitraum'**
+  String get exportPdfAllTime;
+
+  /// No description provided for @importSection.
+  ///
+  /// In de, this message translates to:
+  /// **'Importieren'**
+  String get importSection;
+
+  /// No description provided for @importJson.
+  ///
+  /// In de, this message translates to:
+  /// **'JSON-Backup importieren'**
+  String get importJson;
+
+  /// No description provided for @importJsonDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Datei auswählen und Daten übernehmen.'**
+  String get importJsonDescription;
+
+  /// No description provided for @importModeTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Wie importieren?'**
+  String get importModeTitle;
+
+  /// No description provided for @importModeMerge.
+  ///
+  /// In de, this message translates to:
+  /// **'Zusammenführen'**
+  String get importModeMerge;
+
+  /// No description provided for @importModeMergeDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Fehlende Tage werden ergänzt, bestehende bleiben unverändert.'**
+  String get importModeMergeDescription;
+
+  /// No description provided for @importModeReplace.
+  ///
+  /// In de, this message translates to:
+  /// **'Alles ersetzen'**
+  String get importModeReplace;
+
+  /// No description provided for @importModeReplaceDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Vorhandene Daten werden gelöscht. Nicht rückgängig zu machen!'**
+  String get importModeReplaceDescription;
+
+  /// No description provided for @importDone.
+  ///
+  /// In de, this message translates to:
+  /// **'Import abgeschlossen — {count, plural, =0{keine neuen Einträge} =1{1 neuer Eintrag} other{{count} neue Einträge}} hinzugefügt.'**
+  String importDone(int count);
+
+  /// No description provided for @importFailed.
+  ///
+  /// In de, this message translates to:
+  /// **'Import fehlgeschlagen: {error}'**
+  String importFailed(String error);
+
+  /// No description provided for @exporting.
+  ///
+  /// In de, this message translates to:
+  /// **'Wird erstellt …'**
+  String get exporting;
+
+  /// No description provided for @pdfMonthHeader.
+  ///
+  /// In de, this message translates to:
+  /// **'Kopfschmerz-Report'**
+  String get pdfMonthHeader;
+
+  /// No description provided for @pdfStatsHeading.
+  ///
+  /// In de, this message translates to:
+  /// **'Übersicht'**
+  String get pdfStatsHeading;
+
+  /// No description provided for @pdfStatsTotal.
+  ///
+  /// In de, this message translates to:
+  /// **'Tage mit Eintrag'**
+  String get pdfStatsTotal;
+
+  /// No description provided for @pdfStatsGreen.
+  ///
+  /// In de, this message translates to:
+  /// **'Leicht'**
+  String get pdfStatsGreen;
+
+  /// No description provided for @pdfStatsYellow.
+  ///
+  /// In de, this message translates to:
+  /// **'Mittel'**
+  String get pdfStatsYellow;
+
+  /// No description provided for @pdfStatsRed.
+  ///
+  /// In de, this message translates to:
+  /// **'Stark'**
+  String get pdfStatsRed;
+
+  /// No description provided for @pdfStatsNone.
+  ///
+  /// In de, this message translates to:
+  /// **'Ohne Kopfschmerz'**
+  String get pdfStatsNone;
+
+  /// No description provided for @pdfEntriesHeading.
+  ///
+  /// In de, this message translates to:
+  /// **'Einträge'**
+  String get pdfEntriesHeading;
+
+  /// No description provided for @pdfFooter.
+  ///
+  /// In de, this message translates to:
+  /// **'Generiert von KopfAmpel'**
+  String get pdfFooter;
 }
 
 class _AppLocalizationsDelegate

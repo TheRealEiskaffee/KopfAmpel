@@ -6,6 +6,7 @@ import '../../../core/database/database_providers.dart';
 import '../../../core/domain/tag_kind.dart';
 import '../../../core/i18n/app_localizations.dart';
 import '../../../core/notifications/notification_providers.dart';
+import '../../export/presentation/export_screen.dart';
 import '../application/settings_actions.dart';
 import 'tag_management_screen.dart';
 
@@ -116,12 +117,11 @@ class _SettingsBody extends ConsumerWidget {
               title: Text(l10n.exportData),
               subtitle: Text(l10n.exportDataDescription),
               trailing: const Icon(Icons.chevron_right),
-              onTap: () {
-                // Wired in Phase 6.
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(l10n.exportData)),
-                );
-              },
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => const ExportScreen(),
+                ),
+              ),
             ),
           ],
         ),
