@@ -101,4 +101,26 @@ class AppLocalizationsDe extends AppLocalizations {
   String loadFailed(String error) {
     return 'Konnte nicht geladen werden: $error';
   }
+
+  @override
+  String get notificationTitle => 'Wie war heute?';
+
+  @override
+  String get notificationBody => 'Hattest du heute Kopfschmerzen?';
+
+  @override
+  String get notificationActionYes => 'Ja';
+
+  @override
+  String get notificationActionNo => 'Nein';
+
+  @override
+  String get notificationActionIgnore => 'Ignorieren';
+
+  @override
+  String get notificationChannelName => 'Tägliche Erinnerung';
+
+  @override
+  String get notificationChannelDescription =>
+      'Erinnerung, deine Kopfschmerzen einzutragen.';
 }

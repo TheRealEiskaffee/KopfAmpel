@@ -25,10 +25,29 @@ class NotificationPromptsDao extends DatabaseAccessor<AppDatabase>
     );
   }
 
+  /// Most recent (highest id) prompt for the given day. Multiple prompts per
+  /// day exist when repeats fire and produce new rows.
   Future<NotificationPromptRow?> promptForDay(DateTime day) {
     final key = dayKey(day);
-    return (select(notificationPrompts)..where((p) => p.dayKey.equals(key)))
+    return (select(notificationPrompts)
+          ..where((p) => p.dayKey.equals(key))
+          ..orderBy([(p) => OrderingTerm.desc(p.id)])
+          ..limit(1))
         .getSingleOrNull();
+  }
+
+  Future<NotificationPromptRow?> promptByPlatformId(int platformId) {
+    return (select(notificationPrompts)
+          ..where((p) => p.platformId.equals(platformId)))
+        .getSingleOrNull();
+  }
+
+  Future<List<NotificationPromptRow>> allForDay(DateTime day) {
+    final key = dayKey(day);
+    return (select(notificationPrompts)
+          ..where((p) => p.dayKey.equals(key))
+          ..orderBy([(p) => OrderingTerm.asc(p.scheduledFor)]))
+        .get();
   }
 
   Future<int> markShown(int id, DateTime when) {

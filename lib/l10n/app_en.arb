@@ -34,5 +34,12 @@
     "placeholders": {
       "error": { "type": "String" }
     }
-  }
+  },
+  "notificationTitle": "How was today?",
+  "notificationBody": "Did you have a headache today?",
+  "notificationActionYes": "Yes",
+  "notificationActionNo": "No",
+  "notificationActionIgnore": "Ignore",
+  "notificationChannelName": "Daily reminder",
+  "notificationChannelDescription": "Reminder to log your headaches."
 }

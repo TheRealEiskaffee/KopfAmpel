@@ -100,4 +100,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String loadFailed(String error) {
     return 'Failed to load: $error';
   }
+
+  @override
+  String get notificationTitle => 'How was today?';
+
+  @override
+  String get notificationBody => 'Did you have a headache today?';
+
+  @override
+  String get notificationActionYes => 'Yes';
+
+  @override
+  String get notificationActionNo => 'No';
+
+  @override
+  String get notificationActionIgnore => 'Ignore';
+
+  @override
+  String get notificationChannelName => 'Daily reminder';
+
+  @override
+  String get notificationChannelDescription =>
+      'Reminder to log your headaches.';
 }

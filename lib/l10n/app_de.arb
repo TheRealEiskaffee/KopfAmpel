@@ -34,5 +34,12 @@
     "placeholders": {
       "error": { "type": "String" }
     }
-  }
+  },
+  "notificationTitle": "Wie war heute?",
+  "notificationBody": "Hattest du heute Kopfschmerzen?",
+  "notificationActionYes": "Ja",
+  "notificationActionNo": "Nein",
+  "notificationActionIgnore": "Ignorieren",
+  "notificationChannelName": "Tägliche Erinnerung",
+  "notificationChannelDescription": "Erinnerung, deine Kopfschmerzen einzutragen."
 }

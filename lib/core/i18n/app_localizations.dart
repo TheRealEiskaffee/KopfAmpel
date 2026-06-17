@@ -277,6 +277,48 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Konnte nicht geladen werden: {error}'**
   String loadFailed(String error);
+
+  /// No description provided for @notificationTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Wie war heute?'**
+  String get notificationTitle;
+
+  /// No description provided for @notificationBody.
+  ///
+  /// In de, this message translates to:
+  /// **'Hattest du heute Kopfschmerzen?'**
+  String get notificationBody;
+
+  /// No description provided for @notificationActionYes.
+  ///
+  /// In de, this message translates to:
+  /// **'Ja'**
+  String get notificationActionYes;
+
+  /// No description provided for @notificationActionNo.
+  ///
+  /// In de, this message translates to:
+  /// **'Nein'**
+  String get notificationActionNo;
+
+  /// No description provided for @notificationActionIgnore.
+  ///
+  /// In de, this message translates to:
+  /// **'Ignorieren'**
+  String get notificationActionIgnore;
+
+  /// No description provided for @notificationChannelName.
+  ///
+  /// In de, this message translates to:
+  /// **'Tägliche Erinnerung'**
+  String get notificationChannelName;
+
+  /// No description provided for @notificationChannelDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Erinnerung, deine Kopfschmerzen einzutragen.'**
+  String get notificationChannelDescription;
 }
 
 class _AppLocalizationsDelegate
