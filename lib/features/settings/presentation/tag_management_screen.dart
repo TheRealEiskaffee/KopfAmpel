@@ -48,8 +48,8 @@ class TagManagementScreen extends ConsumerWidget {
           }
           return ListView.separated(
             itemCount: tags.length,
-            separatorBuilder: (_, _) => const Divider(height: 1),
-            itemBuilder: (ctx, i) => _TagTile(tag: tags[i]),
+            separatorBuilder: (_, _) => const Divider(height: 1, indent: 16),
+            itemBuilder: (ctx, i) => _TagTile(tag: tags[i], kind: kind),
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
@@ -61,34 +61,29 @@ class TagManagementScreen extends ConsumerWidget {
   Future<void> _showAddDialog(BuildContext context, WidgetRef ref) async {
     final controller = TextEditingController();
     final l10n = AppLocalizations.of(context);
-    final name = await showDialog<String>(
+    final name = await showCupertinoDialog<String>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      barrierDismissible: true,
+      builder: (ctx) => CupertinoAlertDialog(
         title: Text(l10n.addTagDialogTitle),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          decoration: InputDecoration(hintText: l10n.addTagHint),
-          onSubmitted: (v) => Navigator.of(ctx).pop(v.trim()),
+        content: Padding(
+          padding: const EdgeInsets.only(top: 12),
+          child: CupertinoTextField(
+            controller: controller,
+            autofocus: true,
+            placeholder: l10n.addTagHint,
+            onSubmitted: (v) => Navigator.of(ctx).pop(v.trim()),
+          ),
         ),
-        actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         actions: [
-          Row(
-            children: [
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: () => Navigator.of(ctx).pop(),
-                  child: Text(l10n.cancel),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: FilledButton(
-                  onPressed: () => Navigator.of(ctx).pop(controller.text.trim()),
-                  child: Text(l10n.addTag),
-                ),
-              ),
-            ],
+          CupertinoDialogAction(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: Text(l10n.cancel),
+          ),
+          CupertinoDialogAction(
+            isDefaultAction: true,
+            onPressed: () => Navigator.of(ctx).pop(controller.text.trim()),
+            child: Text(l10n.addTag),
           ),
         ],
       ),
@@ -99,25 +94,73 @@ class TagManagementScreen extends ConsumerWidget {
 }
 
 class _TagTile extends ConsumerWidget {
-  const _TagTile({required this.tag});
+  const _TagTile({required this.tag, required this.kind});
+
   final Tag tag;
+  final TagKind kind;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    return ListTile(
-      title: Text(tag.name),
-      subtitle: tag.isCustom ? null : Text(l10n.languageSystem),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(
-            icon: const Icon(CupertinoIcons.pencil),
-            onPressed: () => _rename(context, ref),
+    final scheme = Theme.of(context).colorScheme;
+
+    return Dismissible(
+      key: ValueKey('tag-${tag.id}'),
+      direction: DismissDirection.endToStart,
+      background: Container(
+        color: scheme.error,
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(CupertinoIcons.delete, color: scheme.onError),
+            const SizedBox(width: 8),
+            Text(
+              l10n.delete,
+              style: TextStyle(
+                color: scheme.onError,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      ),
+      confirmDismiss: (_) => _confirmDelete(context),
+      onDismissed: (_) async {
+        await ref.read(tagsDaoProvider).deleteById(tag.id);
+      },
+      child: ColoredBox(
+        color: scheme.surface,
+        child: ListTile(
+          title: Text(tag.name),
+          subtitle: tag.isCustom ? null : Text(l10n.languageSystem),
+          onTap: () => _rename(context, ref),
+        ),
+      ),
+    );
+  }
+
+  Future<bool?> _confirmDelete(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return showCupertinoDialog<bool>(
+      context: context,
+      barrierDismissible: true,
+      builder: (ctx) => CupertinoAlertDialog(
+        title: Text(l10n.deleteTagTitle),
+        content: Padding(
+          padding: const EdgeInsets.only(top: 8),
+          child: Text(l10n.deleteTagBody),
+        ),
+        actions: [
+          CupertinoDialogAction(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(l10n.cancel),
           ),
-          IconButton(
-            icon: const Icon(CupertinoIcons.delete),
-            onPressed: () => _delete(context, ref),
+          CupertinoDialogAction(
+            isDestructiveAction: true,
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: Text(l10n.delete),
           ),
         ],
       ),
@@ -127,71 +170,34 @@ class _TagTile extends ConsumerWidget {
   Future<void> _rename(BuildContext context, WidgetRef ref) async {
     final controller = TextEditingController(text: tag.name);
     final l10n = AppLocalizations.of(context);
-    final name = await showDialog<String>(
+    final name = await showCupertinoDialog<String>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      barrierDismissible: true,
+      builder: (ctx) => CupertinoAlertDialog(
         title: Text(l10n.renameTagTitle),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          decoration: InputDecoration(hintText: l10n.addTagHint),
+        content: Padding(
+          padding: const EdgeInsets.only(top: 12),
+          child: CupertinoTextField(
+            controller: controller,
+            autofocus: true,
+            placeholder: l10n.addTagHint,
+            onSubmitted: (v) => Navigator.of(ctx).pop(v.trim()),
+          ),
         ),
-        actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         actions: [
-          Row(
-            children: [
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: () => Navigator.of(ctx).pop(),
-                  child: Text(l10n.cancel),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: FilledButton(
-                  onPressed: () => Navigator.of(ctx).pop(controller.text.trim()),
-                  child: Text(l10n.save),
-                ),
-              ),
-            ],
+          CupertinoDialogAction(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: Text(l10n.cancel),
+          ),
+          CupertinoDialogAction(
+            isDefaultAction: true,
+            onPressed: () => Navigator.of(ctx).pop(controller.text.trim()),
+            child: Text(l10n.save),
           ),
         ],
       ),
     );
     if (name == null || name.isEmpty || name == tag.name) return;
     await ref.read(tagsDaoProvider).rename(tag.id, name);
-  }
-
-  Future<void> _delete(BuildContext context, WidgetRef ref) async {
-    final l10n = AppLocalizations.of(context);
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l10n.deleteTagTitle),
-        content: Text(l10n.deleteTagBody),
-        actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-        actions: [
-          Row(
-            children: [
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: () => Navigator.of(ctx).pop(false),
-                  child: Text(l10n.cancel),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: FilledButton.tonal(
-                  onPressed: () => Navigator.of(ctx).pop(true),
-                  child: Text(l10n.delete),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-    if (confirmed != true) return;
-    await ref.read(tagsDaoProvider).deleteById(tag.id);
   }
 }
