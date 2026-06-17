@@ -86,14 +86,32 @@ class HeadacheStats {
 
 final statsRangeProvider = StateProvider<StatsRange>((_) => StatsRange.thirtyDays);
 
-final statsProvider = FutureProvider<HeadacheStats>((ref) async {
+/// Live-updating stats. We watch the entries stream so that adding or
+/// editing an entry on the calendar repaints the stats tab the moment the
+/// user switches over — no manual range toggle required.
+final statsProvider = StreamProvider<HeadacheStats>((ref) {
   final range = ref.watch(statsRangeProvider);
   final db = ref.watch(appDatabaseProvider);
 
-  final allEntries = await db.select(db.entries).get();
-  final allTags = await db.select(db.tags).get();
-  final allEntryTags = await db.select(db.entryTags).get();
-  final tagById = {for (final t in allTags) t.id: t};
+  return db.entriesDao.watchAll().asyncMap((allEntries) async {
+    final allTags = await db.select(db.tags).get();
+    final allEntryTags = await db.select(db.entryTags).get();
+    return _computeStats(
+      range: range,
+      allEntries: allEntries,
+      allTags: allTags,
+      allEntryTags: allEntryTags,
+    );
+  });
+});
+
+HeadacheStats _computeStats({
+  required StatsRange range,
+  required List<dynamic> allEntries,
+  required List<dynamic> allTags,
+  required List<dynamic> allEntryTags,
+}) {
+  final tagById = {for (final t in allTags) t.id as int: t};
 
   final today = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
   final cutoff = range.days == null ? null : today.subtract(Duration(days: range.days! - 1));
@@ -205,4 +223,4 @@ final statsProvider = FutureProvider<HeadacheStats>((ref) async {
     longestFreeStreak: longest,
     currentFreeStreak: currentFree,
   );
-});
+}

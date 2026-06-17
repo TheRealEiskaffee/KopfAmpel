@@ -22,19 +22,25 @@ class StatsScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text(l10n.statsTitle),
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(56),
+          preferredSize: const Size.fromHeight(48),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
-            child: SegmentedButton<StatsRange>(
-              segments: [
-                ButtonSegment(value: StatsRange.sevenDays, label: Text(l10n.statsRange7)),
-                ButtonSegment(value: StatsRange.thirtyDays, label: Text(l10n.statsRange30)),
-                ButtonSegment(value: StatsRange.ninetyDays, label: Text(l10n.statsRange90)),
-                ButtonSegment(value: StatsRange.allTime, label: Text(l10n.statsRangeAll)),
-              ],
-              selected: {range},
-              onSelectionChanged: (sel) =>
-                  ref.read(statsRangeProvider.notifier).state = sel.first,
+            child: SizedBox(
+              height: 32,
+              child: CupertinoSlidingSegmentedControl<StatsRange>(
+                groupValue: range,
+                children: {
+                  StatsRange.sevenDays: Text(l10n.statsRange7),
+                  StatsRange.thirtyDays: Text(l10n.statsRange30),
+                  StatsRange.ninetyDays: Text(l10n.statsRange90),
+                  StatsRange.allTime: Text(l10n.statsRangeAll),
+                },
+                onValueChanged: (v) {
+                  if (v != null) {
+                    ref.read(statsRangeProvider.notifier).state = v;
+                  }
+                },
+              ),
             ),
           ),
         ),
