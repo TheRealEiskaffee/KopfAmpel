@@ -60,7 +60,13 @@ class AppTheme {
         backgroundColor: scheme.surface,
         surfaceTintColor: Colors.transparent,
         // No M3 pill behind the active icon — colour alone marks selection.
+        // Any residual focus/hover overlay should be a circle (not a stadium)
+        // so it never reads as the old elliptical indicator.
         indicatorColor: Colors.transparent,
+        indicatorShape: const CircleBorder(),
+        overlayColor: WidgetStatePropertyAll(
+          scheme.primary.withValues(alpha: 0.08),
+        ),
         labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
         iconTheme: WidgetStateProperty.resolveWith((states) {
           final selected = states.contains(WidgetState.selected);

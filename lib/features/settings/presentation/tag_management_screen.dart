@@ -23,10 +23,15 @@ class TagManagementScreen extends ConsumerWidget {
         : ref.watch(medicationTagsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: Text(title)),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddDialog(context, ref),
-        child: const Icon(CupertinoIcons.add),
+      appBar: AppBar(
+        title: Text(title),
+        actions: [
+          IconButton(
+            icon: const Icon(CupertinoIcons.add, size: 22),
+            tooltip: l10n.addTag,
+            onPressed: () => _showAddDialog(context, ref),
+          ),
+        ],
       ),
       body: tagsAsync.when(
         data: (tags) {

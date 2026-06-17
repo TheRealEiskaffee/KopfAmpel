@@ -399,6 +399,35 @@ class _MaxRepeatsTile extends StatelessWidget {
   }
 }
 
+class _SegmentedRow extends StatelessWidget {
+  const _SegmentedRow({required this.icon, required this.label, required this.segmented});
+
+  final IconData icon;
+  final String label;
+  final Widget segmented;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Icon(icon, color: Theme.of(context).colorScheme.onSurfaceVariant),
+              const SizedBox(width: 16),
+              Text(label, style: Theme.of(context).textTheme.bodyLarge),
+            ],
+          ),
+          const SizedBox(height: 10),
+          SizedBox(height: 32, child: segmented),
+        ],
+      ),
+    );
+  }
+}
+
 class _LocaleTile extends StatelessWidget {
   const _LocaleTile({required this.localeCode, required this.onChanged});
 
@@ -408,17 +437,22 @@ class _LocaleTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    return ListTile(
-      leading: const Icon(CupertinoIcons.globe),
-      title: Text(l10n.language),
-      trailing: DropdownButton<String?>(
-        value: localeCode,
-        items: [
-          DropdownMenuItem(value: null, child: Text(l10n.languageSystem)),
-          DropdownMenuItem(value: 'de', child: Text(l10n.languageDe)),
-          DropdownMenuItem(value: 'en', child: Text(l10n.languageEn)),
-        ],
-        onChanged: onChanged,
+    // CupertinoSlidingSegmentedControl's type parameter must be non-null, so
+    // we use 'system' as a sentinel and map it back to null at the edge.
+    return _SegmentedRow(
+      icon: CupertinoIcons.globe,
+      label: l10n.language,
+      segmented: CupertinoSlidingSegmentedControl<String>(
+        groupValue: localeCode ?? 'system',
+        children: {
+          'system': Text(l10n.languageSystem),
+          'de': Text(l10n.languageDe),
+          'en': Text(l10n.languageEn),
+        },
+        onValueChanged: (v) {
+          if (v == null) return;
+          onChanged(v == 'system' ? null : v);
+        },
       ),
     );
   }
@@ -433,17 +467,17 @@ class _ThemeTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    return ListTile(
-      leading: const Icon(CupertinoIcons.moon),
-      title: Text(l10n.themeMode),
-      trailing: DropdownButton<String>(
-        value: themeMode,
-        items: [
-          DropdownMenuItem(value: 'system', child: Text(l10n.themeSystem)),
-          DropdownMenuItem(value: 'light', child: Text(l10n.themeLight)),
-          DropdownMenuItem(value: 'dark', child: Text(l10n.themeDark)),
-        ],
-        onChanged: (v) {
+    return _SegmentedRow(
+      icon: CupertinoIcons.moon,
+      label: l10n.themeMode,
+      segmented: CupertinoSlidingSegmentedControl<String>(
+        groupValue: themeMode,
+        children: {
+          'system': Text(l10n.themeSystem),
+          'light': Text(l10n.themeLight),
+          'dark': Text(l10n.themeDark),
+        },
+        onValueChanged: (v) {
           if (v != null) onChanged(v);
         },
       ),
