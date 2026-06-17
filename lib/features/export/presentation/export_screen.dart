@@ -32,31 +32,56 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
   }
 
   Future<void> _share(File file, String subject) async {
-    await Share.shareXFiles([XFile(file.path)], subject: subject);
+    // sharePositionOrigin is required on iPad and harmless elsewhere; it lets
+    // the share sheet anchor itself when presented as a popover.
+    final box = context.findRenderObject() as RenderBox?;
+    final origin = box != null && box.hasSize
+        ? box.localToGlobal(Offset.zero) & box.size
+        : null;
+    await Share.shareXFiles(
+      [XFile(file.path)],
+      subject: subject,
+      sharePositionOrigin: origin,
+    );
   }
 
-  Future<void> _exportJson() => _withBusy(() async {
-        final l10n = AppLocalizations.of(context);
-        final file = await ref.read(exportServiceProvider).exportJson();
-        await _share(file, l10n.exportJson);
-      });
-
-  Future<void> _exportCsv() => _withBusy(() async {
-        final l10n = AppLocalizations.of(context);
-        final file = await ref.read(exportServiceProvider).exportCsv();
-        await _share(file, l10n.exportCsv);
-      });
-
-  Future<void> _exportPdf() => _withBusy(() async {
+  Future<void> _runExport(Future<File> Function() build, String subject) async {
+    final l10n = AppLocalizations.of(context);
+    await _withBusy(() async {
+      try {
+        final file = await build();
         if (!mounted) return;
-        final l10n = AppLocalizations.of(context);
-        final strings = pdfStringsOf(context);
-        final file = await ref.read(exportServiceProvider).exportPdf(
-              strings: strings,
-              month: _pdfAllTime ? null : _pdfMonth,
-            );
-        await _share(file, l10n.exportPdf);
-      });
+        await _share(file, subject);
+      } catch (e) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.exportFailed(e.toString()))),
+        );
+      }
+    });
+  }
+
+  Future<void> _exportJson() => _runExport(
+        () => ref.read(exportServiceProvider).exportJson(),
+        AppLocalizations.of(context).exportJson,
+      );
+
+  Future<void> _exportCsv() => _runExport(
+        () => ref.read(exportServiceProvider).exportCsv(),
+        AppLocalizations.of(context).exportCsv,
+      );
+
+  Future<void> _exportPdf() {
+    final strings = pdfStringsOf(context);
+    final month = _pdfAllTime ? null : _pdfMonth;
+    return _runExport(
+      () => ref.read(exportServiceProvider).exportPdf(
+            strings: strings,
+            month: month,
+          ),
+      AppLocalizations.of(context).exportPdf,
+    );
+  }
 
   Future<void> _import() async {
     final l10n = AppLocalizations.of(context);

@@ -93,15 +93,24 @@ class _DayDetailSheetState extends ConsumerState<DayDetailSheet> {
       builder: (ctx) => AlertDialog(
         title: Text(l10n.deleteEntryTitle),
         content: Text(l10n.deleteEntryBody),
-        actionsAlignment: MainAxisAlignment.spaceEvenly,
+        actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(l10n.cancel),
-          ),
-          FilledButton.tonal(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: Text(l10n.delete),
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: () => Navigator.of(ctx).pop(false),
+                  child: Text(l10n.cancel),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: FilledButton.tonal(
+                  onPressed: () => Navigator.of(ctx).pop(true),
+                  child: Text(l10n.delete),
+                ),
+              ),
+            ],
           ),
         ],
       ),

@@ -497,4 +497,79 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get calendarFormatWeek => 'Woche';
+
+  @override
+  String get futureDateNotAllowed =>
+      'Einträge in der Zukunft sind nicht möglich.';
+
+  @override
+  String get statsByWeekday => 'Verteilung nach Wochentag';
+
+  @override
+  String get statsByWeekdayHint =>
+      'Anteil Tage mit Kopfschmerzen pro Wochentag im gewählten Zeitraum.';
+
+  @override
+  String get statsForecastTitle => 'Prognose nächste 7 Tage';
+
+  @override
+  String get statsForecastBody =>
+      'Wahrscheinlichkeit für Kopfschmerzen, basierend auf deinen bisherigen Wochentags-Daten.';
+
+  @override
+  String statsForecastNeedsMore(int needed, int have) {
+    return 'Noch nicht genug Daten — wir brauchen mindestens $needed Einträge ($have bisher).';
+  }
+
+  @override
+  String get statsWeeklyAverage => 'Pro Woche im Schnitt';
+
+  @override
+  String statsWeeklyAverageValue(String value) {
+    return '$value Tage';
+  }
+
+  @override
+  String get statsLongestStreak => 'Längste kopfschmerz-freie Strähne';
+
+  @override
+  String get statsCurrentStreak => 'Aktuelle Strähne';
+
+  @override
+  String statsStreakDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Tage',
+      one: '1 Tag',
+      zero: '0 Tage',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get weekdayMon => 'Mo';
+
+  @override
+  String get weekdayTue => 'Di';
+
+  @override
+  String get weekdayWed => 'Mi';
+
+  @override
+  String get weekdayThu => 'Do';
+
+  @override
+  String get weekdayFri => 'Fr';
+
+  @override
+  String get weekdaySat => 'Sa';
+
+  @override
+  String get weekdaySun => 'So';
+
+  @override
+  String exportFailed(String error) {
+    return 'Export fehlgeschlagen: $error';
+  }
 }

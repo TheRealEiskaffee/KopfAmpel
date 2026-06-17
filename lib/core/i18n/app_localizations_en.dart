@@ -496,4 +496,79 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get calendarFormatWeek => 'Week';
+
+  @override
+  String get futureDateNotAllowed =>
+      'Entries cannot be added for future dates.';
+
+  @override
+  String get statsByWeekday => 'By weekday';
+
+  @override
+  String get statsByWeekdayHint =>
+      'Share of headache days per weekday within the selected range.';
+
+  @override
+  String get statsForecastTitle => 'Next 7 days forecast';
+
+  @override
+  String get statsForecastBody =>
+      'Probability of headache based on your historical weekday rates.';
+
+  @override
+  String statsForecastNeedsMore(int needed, int have) {
+    return 'Not enough data yet — need at least $needed entries ($have so far).';
+  }
+
+  @override
+  String get statsWeeklyAverage => 'Weekly average';
+
+  @override
+  String statsWeeklyAverageValue(String value) {
+    return '$value days';
+  }
+
+  @override
+  String get statsLongestStreak => 'Longest headache-free streak';
+
+  @override
+  String get statsCurrentStreak => 'Current streak';
+
+  @override
+  String statsStreakDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days',
+      one: '1 day',
+      zero: '0 days',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get weekdayMon => 'Mon';
+
+  @override
+  String get weekdayTue => 'Tue';
+
+  @override
+  String get weekdayWed => 'Wed';
+
+  @override
+  String get weekdayThu => 'Thu';
+
+  @override
+  String get weekdayFri => 'Fri';
+
+  @override
+  String get weekdaySat => 'Sat';
+
+  @override
+  String get weekdaySun => 'Sun';
+
+  @override
+  String exportFailed(String error) {
+    return 'Export failed: $error';
+  }
 }

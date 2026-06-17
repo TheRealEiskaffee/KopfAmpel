@@ -172,5 +172,45 @@
   "onboardingBack": "Zurück",
   "calendarFormatMonth": "Monat",
   "calendarFormatTwoWeeks": "2 Wochen",
-  "calendarFormatWeek": "Woche"
+  "calendarFormatWeek": "Woche",
+  "futureDateNotAllowed": "Einträge in der Zukunft sind nicht möglich.",
+  "statsByWeekday": "Verteilung nach Wochentag",
+  "statsByWeekdayHint": "Anteil Tage mit Kopfschmerzen pro Wochentag im gewählten Zeitraum.",
+  "statsForecastTitle": "Prognose nächste 7 Tage",
+  "statsForecastBody": "Wahrscheinlichkeit für Kopfschmerzen, basierend auf deinen bisherigen Wochentags-Daten.",
+  "statsForecastNeedsMore": "Noch nicht genug Daten — wir brauchen mindestens {needed} Einträge ({have} bisher).",
+  "@statsForecastNeedsMore": {
+    "placeholders": {
+      "needed": { "type": "int" },
+      "have": { "type": "int" }
+    }
+  },
+  "statsWeeklyAverage": "Pro Woche im Schnitt",
+  "statsWeeklyAverageValue": "{value} Tage",
+  "@statsWeeklyAverageValue": {
+    "placeholders": {
+      "value": { "type": "String" }
+    }
+  },
+  "statsLongestStreak": "Längste kopfschmerz-freie Strähne",
+  "statsCurrentStreak": "Aktuelle Strähne",
+  "statsStreakDays": "{count, plural, =0{0 Tage} =1{1 Tag} other{{count} Tage}}",
+  "@statsStreakDays": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "weekdayMon": "Mo",
+  "weekdayTue": "Di",
+  "weekdayWed": "Mi",
+  "weekdayThu": "Do",
+  "weekdayFri": "Fr",
+  "weekdaySat": "Sa",
+  "weekdaySun": "So",
+  "exportFailed": "Export fehlgeschlagen: {error}",
+  "@exportFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  }
 }

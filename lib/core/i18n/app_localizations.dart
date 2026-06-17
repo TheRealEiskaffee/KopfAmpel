@@ -985,6 +985,120 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Woche'**
   String get calendarFormatWeek;
+
+  /// No description provided for @futureDateNotAllowed.
+  ///
+  /// In de, this message translates to:
+  /// **'Einträge in der Zukunft sind nicht möglich.'**
+  String get futureDateNotAllowed;
+
+  /// No description provided for @statsByWeekday.
+  ///
+  /// In de, this message translates to:
+  /// **'Verteilung nach Wochentag'**
+  String get statsByWeekday;
+
+  /// No description provided for @statsByWeekdayHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Anteil Tage mit Kopfschmerzen pro Wochentag im gewählten Zeitraum.'**
+  String get statsByWeekdayHint;
+
+  /// No description provided for @statsForecastTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Prognose nächste 7 Tage'**
+  String get statsForecastTitle;
+
+  /// No description provided for @statsForecastBody.
+  ///
+  /// In de, this message translates to:
+  /// **'Wahrscheinlichkeit für Kopfschmerzen, basierend auf deinen bisherigen Wochentags-Daten.'**
+  String get statsForecastBody;
+
+  /// No description provided for @statsForecastNeedsMore.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch nicht genug Daten — wir brauchen mindestens {needed} Einträge ({have} bisher).'**
+  String statsForecastNeedsMore(int needed, int have);
+
+  /// No description provided for @statsWeeklyAverage.
+  ///
+  /// In de, this message translates to:
+  /// **'Pro Woche im Schnitt'**
+  String get statsWeeklyAverage;
+
+  /// No description provided for @statsWeeklyAverageValue.
+  ///
+  /// In de, this message translates to:
+  /// **'{value} Tage'**
+  String statsWeeklyAverageValue(String value);
+
+  /// No description provided for @statsLongestStreak.
+  ///
+  /// In de, this message translates to:
+  /// **'Längste kopfschmerz-freie Strähne'**
+  String get statsLongestStreak;
+
+  /// No description provided for @statsCurrentStreak.
+  ///
+  /// In de, this message translates to:
+  /// **'Aktuelle Strähne'**
+  String get statsCurrentStreak;
+
+  /// No description provided for @statsStreakDays.
+  ///
+  /// In de, this message translates to:
+  /// **'{count, plural, =0{0 Tage} =1{1 Tag} other{{count} Tage}}'**
+  String statsStreakDays(int count);
+
+  /// No description provided for @weekdayMon.
+  ///
+  /// In de, this message translates to:
+  /// **'Mo'**
+  String get weekdayMon;
+
+  /// No description provided for @weekdayTue.
+  ///
+  /// In de, this message translates to:
+  /// **'Di'**
+  String get weekdayTue;
+
+  /// No description provided for @weekdayWed.
+  ///
+  /// In de, this message translates to:
+  /// **'Mi'**
+  String get weekdayWed;
+
+  /// No description provided for @weekdayThu.
+  ///
+  /// In de, this message translates to:
+  /// **'Do'**
+  String get weekdayThu;
+
+  /// No description provided for @weekdayFri.
+  ///
+  /// In de, this message translates to:
+  /// **'Fr'**
+  String get weekdayFri;
+
+  /// No description provided for @weekdaySat.
+  ///
+  /// In de, this message translates to:
+  /// **'Sa'**
+  String get weekdaySat;
+
+  /// No description provided for @weekdaySun.
+  ///
+  /// In de, this message translates to:
+  /// **'So'**
+  String get weekdaySun;
+
+  /// No description provided for @exportFailed.
+  ///
+  /// In de, this message translates to:
+  /// **'Export fehlgeschlagen: {error}'**
+  String exportFailed(String error);
 }
 
 class _AppLocalizationsDelegate

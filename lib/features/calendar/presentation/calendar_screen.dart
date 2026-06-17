@@ -29,11 +29,22 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   }
 
   void _openDetail(DateTime day) {
+    final today = dayKey(DateTime.now());
+    final key = dayKey(day);
+    if (key.isAfter(today)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          duration: const Duration(seconds: 2),
+          content: Text(AppLocalizations.of(context).futureDateNotAllowed),
+        ),
+      );
+      return;
+    }
     setState(() {
-      _selectedDay = dayKey(day);
+      _selectedDay = key;
       _focusedDay = day;
     });
-    DayDetailSheet.show(context, dayKey(day));
+    DayDetailSheet.show(context, key);
   }
 
   @override
@@ -79,8 +90,11 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                   outsideDaysVisible: false,
                 ),
                 calendarBuilders: CalendarBuilders(
-                  defaultBuilder: (ctx, day, focused) =>
-                      _DayCell(day: day, severity: severityByDay[dayKey(day)]),
+                  defaultBuilder: (ctx, day, focused) => _DayCell(
+                    day: day,
+                    severity: severityByDay[dayKey(day)],
+                    isFuture: dayKey(day).isAfter(dayKey(DateTime.now())),
+                  ),
                   todayBuilder: (ctx, day, focused) => _DayCell(
                     day: day,
                     severity: severityByDay[dayKey(day)],
@@ -109,12 +123,14 @@ class _DayCell extends StatelessWidget {
     this.severity,
     this.isToday = false,
     this.isSelected = false,
+    this.isFuture = false,
   });
 
   final DateTime day;
   final Severity? severity;
   final bool isToday;
   final bool isSelected;
+  final bool isFuture;
 
   @override
   Widget build(BuildContext context) {
@@ -133,7 +149,7 @@ class _DayCell extends StatelessWidget {
             ? scheme.primary.withValues(alpha: 0.4)
             : Colors.transparent;
 
-    return Container(
+    final cell = Container(
       margin: const EdgeInsets.all(3),
       decoration: BoxDecoration(
         color: bg,
@@ -149,6 +165,9 @@ class _DayCell extends StatelessWidget {
         ),
       ),
     );
+
+    if (!isFuture) return cell;
+    return Opacity(opacity: 0.35, child: cell);
   }
 }
 
