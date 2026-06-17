@@ -65,6 +65,7 @@ class TagManagementScreen extends ConsumerWidget {
           decoration: InputDecoration(hintText: l10n.addTagHint),
           onSubmitted: (v) => Navigator.of(ctx).pop(v.trim()),
         ),
+        actionsAlignment: MainAxisAlignment.spaceEvenly,
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
@@ -120,6 +121,7 @@ class _TagTile extends ConsumerWidget {
           autofocus: true,
           decoration: InputDecoration(hintText: l10n.addTagHint),
         ),
+        actionsAlignment: MainAxisAlignment.spaceEvenly,
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
@@ -143,6 +145,7 @@ class _TagTile extends ConsumerWidget {
       builder: (ctx) => AlertDialog(
         title: Text(l10n.deleteTagTitle),
         content: Text(l10n.deleteTagBody),
+        actionsAlignment: MainAxisAlignment.spaceEvenly,
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),

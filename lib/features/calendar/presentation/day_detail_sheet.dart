@@ -93,6 +93,7 @@ class _DayDetailSheetState extends ConsumerState<DayDetailSheet> {
       builder: (ctx) => AlertDialog(
         title: Text(l10n.deleteEntryTitle),
         content: Text(l10n.deleteEntryBody),
+        actionsAlignment: MainAxisAlignment.spaceEvenly,
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),

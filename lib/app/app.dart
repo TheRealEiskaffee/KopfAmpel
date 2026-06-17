@@ -37,6 +37,13 @@ class KopfAmpelApp extends ConsumerWidget {
       routerConfig: router,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
+      // Tap anywhere outside an input field to dismiss the soft keyboard.
+      // GestureDetector with no explicit behavior defers to children, so
+      // buttons and text fields still receive their own taps.
+      builder: (context, child) => GestureDetector(
+        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+        child: child,
+      ),
     );
   }
 }
