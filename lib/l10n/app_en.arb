@@ -143,5 +143,31 @@
   "onboardingAllow": "Allow",
   "onboardingLater": "Later",
   "onboardingFinish": "Finish",
-  "onboardingSkip": "Skip"
+  "onboardingSkip": "Skip",
+  "onboardingChoiceTitle": "How do you want to start?",
+  "onboardingChoiceBody": "If you have data from another device, you can import it. Otherwise we'll walk through a couple of settings.",
+  "onboardingChoiceImport": "Import data",
+  "onboardingChoiceImportDescription": "Load an existing KopfAmpel backup.",
+  "onboardingChoiceFresh": "Start fresh",
+  "onboardingChoiceFreshDescription": "Set things up now and get going.",
+  "onboardingAppearanceTitle": "Language & theme",
+  "onboardingAppearanceBody": "You can change both later at any time.",
+  "onboardingReminderTitle": "Daily reminder",
+  "onboardingReminderBody": "Pick when and how often KopfAmpel should ask.",
+  "onboardingRepeatLabel": "Ask again if ignored",
+  "onboardingTagsTitle": "Triggers & medications",
+  "onboardingTagsBody": "We've prepared a default list. You can tweak it now or later.",
+  "onboardingTagsManageTriggers": "Edit triggers",
+  "onboardingTagsManageMedications": "Edit medications",
+  "onboardingDoneTitle": "All set",
+  "onboardingDoneBody": "KopfAmpel is ready.",
+  "onboardingDoneImportedBody": "{count, plural, =0{Backup loaded.} =1{1 entry imported.} other{{count} entries imported.}} You're ready to go.",
+  "@onboardingDoneImportedBody": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "onboardingStart": "Let's go",
+  "onboardingImportRunning": "Importing…",
+  "onboardingBack": "Back"
 }

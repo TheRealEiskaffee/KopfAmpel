@@ -410,4 +410,82 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get onboardingSkip => 'Überspringen';
+
+  @override
+  String get onboardingChoiceTitle => 'Wie möchtest du starten?';
+
+  @override
+  String get onboardingChoiceBody =>
+      'Hast du Daten von einem anderen Gerät, kannst du sie importieren. Sonst geht\'s mit ein paar Einstellungen weiter.';
+
+  @override
+  String get onboardingChoiceImport => 'Daten importieren';
+
+  @override
+  String get onboardingChoiceImportDescription =>
+      'Vorhandenes KopfAmpel-Backup einlesen.';
+
+  @override
+  String get onboardingChoiceFresh => 'Neu beginnen';
+
+  @override
+  String get onboardingChoiceFreshDescription =>
+      'Einstellungen jetzt einrichten und loslegen.';
+
+  @override
+  String get onboardingAppearanceTitle => 'Sprache & Theme';
+
+  @override
+  String get onboardingAppearanceBody =>
+      'Du kannst beides später jederzeit ändern.';
+
+  @override
+  String get onboardingReminderTitle => 'Tägliche Erinnerung';
+
+  @override
+  String get onboardingReminderBody =>
+      'Wähle, wann und wie oft KopfAmpel nachfragt.';
+
+  @override
+  String get onboardingRepeatLabel => 'Bei Ignorieren erneut fragen';
+
+  @override
+  String get onboardingTagsTitle => 'Trigger & Medikamente';
+
+  @override
+  String get onboardingTagsBody =>
+      'Wir haben eine Standard-Liste vorbereitet. Du kannst sie jetzt oder später anpassen.';
+
+  @override
+  String get onboardingTagsManageTriggers => 'Trigger anpassen';
+
+  @override
+  String get onboardingTagsManageMedications => 'Medikamente anpassen';
+
+  @override
+  String get onboardingDoneTitle => 'Alles bereit';
+
+  @override
+  String get onboardingDoneBody => 'KopfAmpel ist eingerichtet.';
+
+  @override
+  String onboardingDoneImportedBody(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Einträge importiert.',
+      one: '1 Eintrag importiert.',
+      zero: 'Backup eingelesen.',
+    );
+    return '$_temp0 Du kannst direkt loslegen.';
+  }
+
+  @override
+  String get onboardingStart => 'Los geht\'s';
+
+  @override
+  String get onboardingImportRunning => 'Wird importiert…';
+
+  @override
+  String get onboardingBack => 'Zurück';
 }

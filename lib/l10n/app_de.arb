@@ -143,5 +143,31 @@
   "onboardingAllow": "Erlauben",
   "onboardingLater": "Später",
   "onboardingFinish": "Fertig",
-  "onboardingSkip": "Überspringen"
+  "onboardingSkip": "Überspringen",
+  "onboardingChoiceTitle": "Wie möchtest du starten?",
+  "onboardingChoiceBody": "Hast du Daten von einem anderen Gerät, kannst du sie importieren. Sonst geht's mit ein paar Einstellungen weiter.",
+  "onboardingChoiceImport": "Daten importieren",
+  "onboardingChoiceImportDescription": "Vorhandenes KopfAmpel-Backup einlesen.",
+  "onboardingChoiceFresh": "Neu beginnen",
+  "onboardingChoiceFreshDescription": "Einstellungen jetzt einrichten und loslegen.",
+  "onboardingAppearanceTitle": "Sprache & Theme",
+  "onboardingAppearanceBody": "Du kannst beides später jederzeit ändern.",
+  "onboardingReminderTitle": "Tägliche Erinnerung",
+  "onboardingReminderBody": "Wähle, wann und wie oft KopfAmpel nachfragt.",
+  "onboardingRepeatLabel": "Bei Ignorieren erneut fragen",
+  "onboardingTagsTitle": "Trigger & Medikamente",
+  "onboardingTagsBody": "Wir haben eine Standard-Liste vorbereitet. Du kannst sie jetzt oder später anpassen.",
+  "onboardingTagsManageTriggers": "Trigger anpassen",
+  "onboardingTagsManageMedications": "Medikamente anpassen",
+  "onboardingDoneTitle": "Alles bereit",
+  "onboardingDoneBody": "KopfAmpel ist eingerichtet.",
+  "onboardingDoneImportedBody": "{count, plural, =0{Backup eingelesen.} =1{1 Eintrag importiert.} other{{count} Einträge importiert.}} Du kannst direkt loslegen.",
+  "@onboardingDoneImportedBody": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "onboardingStart": "Los geht's",
+  "onboardingImportRunning": "Wird importiert…",
+  "onboardingBack": "Zurück"
 }

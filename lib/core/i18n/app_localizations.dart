@@ -841,6 +841,132 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Überspringen'**
   String get onboardingSkip;
+
+  /// No description provided for @onboardingChoiceTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Wie möchtest du starten?'**
+  String get onboardingChoiceTitle;
+
+  /// No description provided for @onboardingChoiceBody.
+  ///
+  /// In de, this message translates to:
+  /// **'Hast du Daten von einem anderen Gerät, kannst du sie importieren. Sonst geht\'s mit ein paar Einstellungen weiter.'**
+  String get onboardingChoiceBody;
+
+  /// No description provided for @onboardingChoiceImport.
+  ///
+  /// In de, this message translates to:
+  /// **'Daten importieren'**
+  String get onboardingChoiceImport;
+
+  /// No description provided for @onboardingChoiceImportDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Vorhandenes KopfAmpel-Backup einlesen.'**
+  String get onboardingChoiceImportDescription;
+
+  /// No description provided for @onboardingChoiceFresh.
+  ///
+  /// In de, this message translates to:
+  /// **'Neu beginnen'**
+  String get onboardingChoiceFresh;
+
+  /// No description provided for @onboardingChoiceFreshDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Einstellungen jetzt einrichten und loslegen.'**
+  String get onboardingChoiceFreshDescription;
+
+  /// No description provided for @onboardingAppearanceTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Sprache & Theme'**
+  String get onboardingAppearanceTitle;
+
+  /// No description provided for @onboardingAppearanceBody.
+  ///
+  /// In de, this message translates to:
+  /// **'Du kannst beides später jederzeit ändern.'**
+  String get onboardingAppearanceBody;
+
+  /// No description provided for @onboardingReminderTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Tägliche Erinnerung'**
+  String get onboardingReminderTitle;
+
+  /// No description provided for @onboardingReminderBody.
+  ///
+  /// In de, this message translates to:
+  /// **'Wähle, wann und wie oft KopfAmpel nachfragt.'**
+  String get onboardingReminderBody;
+
+  /// No description provided for @onboardingRepeatLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Bei Ignorieren erneut fragen'**
+  String get onboardingRepeatLabel;
+
+  /// No description provided for @onboardingTagsTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Trigger & Medikamente'**
+  String get onboardingTagsTitle;
+
+  /// No description provided for @onboardingTagsBody.
+  ///
+  /// In de, this message translates to:
+  /// **'Wir haben eine Standard-Liste vorbereitet. Du kannst sie jetzt oder später anpassen.'**
+  String get onboardingTagsBody;
+
+  /// No description provided for @onboardingTagsManageTriggers.
+  ///
+  /// In de, this message translates to:
+  /// **'Trigger anpassen'**
+  String get onboardingTagsManageTriggers;
+
+  /// No description provided for @onboardingTagsManageMedications.
+  ///
+  /// In de, this message translates to:
+  /// **'Medikamente anpassen'**
+  String get onboardingTagsManageMedications;
+
+  /// No description provided for @onboardingDoneTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Alles bereit'**
+  String get onboardingDoneTitle;
+
+  /// No description provided for @onboardingDoneBody.
+  ///
+  /// In de, this message translates to:
+  /// **'KopfAmpel ist eingerichtet.'**
+  String get onboardingDoneBody;
+
+  /// No description provided for @onboardingDoneImportedBody.
+  ///
+  /// In de, this message translates to:
+  /// **'{count, plural, =0{Backup eingelesen.} =1{1 Eintrag importiert.} other{{count} Einträge importiert.}} Du kannst direkt loslegen.'**
+  String onboardingDoneImportedBody(int count);
+
+  /// No description provided for @onboardingStart.
+  ///
+  /// In de, this message translates to:
+  /// **'Los geht\'s'**
+  String get onboardingStart;
+
+  /// No description provided for @onboardingImportRunning.
+  ///
+  /// In de, this message translates to:
+  /// **'Wird importiert…'**
+  String get onboardingImportRunning;
+
+  /// No description provided for @onboardingBack.
+  ///
+  /// In de, this message translates to:
+  /// **'Zurück'**
+  String get onboardingBack;
 }
 
 class _AppLocalizationsDelegate

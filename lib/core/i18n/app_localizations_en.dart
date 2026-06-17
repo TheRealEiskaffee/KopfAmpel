@@ -409,4 +409,82 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingSkip => 'Skip';
+
+  @override
+  String get onboardingChoiceTitle => 'How do you want to start?';
+
+  @override
+  String get onboardingChoiceBody =>
+      'If you have data from another device, you can import it. Otherwise we\'ll walk through a couple of settings.';
+
+  @override
+  String get onboardingChoiceImport => 'Import data';
+
+  @override
+  String get onboardingChoiceImportDescription =>
+      'Load an existing KopfAmpel backup.';
+
+  @override
+  String get onboardingChoiceFresh => 'Start fresh';
+
+  @override
+  String get onboardingChoiceFreshDescription =>
+      'Set things up now and get going.';
+
+  @override
+  String get onboardingAppearanceTitle => 'Language & theme';
+
+  @override
+  String get onboardingAppearanceBody =>
+      'You can change both later at any time.';
+
+  @override
+  String get onboardingReminderTitle => 'Daily reminder';
+
+  @override
+  String get onboardingReminderBody =>
+      'Pick when and how often KopfAmpel should ask.';
+
+  @override
+  String get onboardingRepeatLabel => 'Ask again if ignored';
+
+  @override
+  String get onboardingTagsTitle => 'Triggers & medications';
+
+  @override
+  String get onboardingTagsBody =>
+      'We\'ve prepared a default list. You can tweak it now or later.';
+
+  @override
+  String get onboardingTagsManageTriggers => 'Edit triggers';
+
+  @override
+  String get onboardingTagsManageMedications => 'Edit medications';
+
+  @override
+  String get onboardingDoneTitle => 'All set';
+
+  @override
+  String get onboardingDoneBody => 'KopfAmpel is ready.';
+
+  @override
+  String onboardingDoneImportedBody(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count entries imported.',
+      one: '1 entry imported.',
+      zero: 'Backup loaded.',
+    );
+    return '$_temp0 You\'re ready to go.';
+  }
+
+  @override
+  String get onboardingStart => 'Let\'s go';
+
+  @override
+  String get onboardingImportRunning => 'Importing…';
+
+  @override
+  String get onboardingBack => 'Back';
 }
