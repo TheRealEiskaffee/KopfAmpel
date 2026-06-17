@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -50,7 +51,7 @@ class _SettingsBody extends ConsumerWidget {
         _Section(
           title: l10n.reminderSection,
           children: [
-            SwitchListTile(
+            SwitchListTile.adaptive(
               title: Text(l10n.notificationsEnabled),
               subtitle: Text(l10n.notificationsEnabledDescription),
               value: settings.notificationsEnabled,
@@ -67,7 +68,7 @@ class _SettingsBody extends ConsumerWidget {
                 if (context.mounted) await _refreshNotifications(context, ref);
               },
             ),
-            SwitchListTile(
+            SwitchListTile.adaptive(
               title: Text(l10n.reminderRepeats),
               subtitle: Text(l10n.reminderRepeatsDescription),
               value: settings.repeatEnabled,
@@ -93,32 +94,32 @@ class _SettingsBody extends ConsumerWidget {
           title: l10n.dataSection,
           children: [
             ListTile(
-              leading: const Icon(Icons.tag_outlined),
+              leading: const Icon(CupertinoIcons.tag),
               title: Text(l10n.manageTriggers),
-              trailing: const Icon(Icons.chevron_right),
+              trailing: const Icon(CupertinoIcons.chevron_right, size: 18),
               onTap: () => Navigator.of(context).push(
-                MaterialPageRoute<void>(
+                CupertinoPageRoute<void>(
                   builder: (_) => const TagManagementScreen(kind: TagKind.trigger),
                 ),
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.medication_outlined),
+              leading: const Icon(CupertinoIcons.bandage),
               title: Text(l10n.manageMedications),
-              trailing: const Icon(Icons.chevron_right),
+              trailing: const Icon(CupertinoIcons.chevron_right, size: 18),
               onTap: () => Navigator.of(context).push(
-                MaterialPageRoute<void>(
+                CupertinoPageRoute<void>(
                   builder: (_) => const TagManagementScreen(kind: TagKind.medication),
                 ),
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.ios_share_outlined),
+              leading: const Icon(CupertinoIcons.share),
               title: Text(l10n.exportData),
               subtitle: Text(l10n.exportDataDescription),
-              trailing: const Icon(Icons.chevron_right),
+              trailing: const Icon(CupertinoIcons.chevron_right, size: 18),
               onTap: () => Navigator.of(context).push(
-                MaterialPageRoute<void>(
+                CupertinoPageRoute<void>(
                   builder: (_) => const ExportScreen(),
                 ),
               ),
@@ -149,7 +150,7 @@ class _SettingsBody extends ConsumerWidget {
                   Padding(
                     padding: const EdgeInsets.only(top: 2),
                     child: Icon(
-                      Icons.lock_outline,
+                      CupertinoIcons.lock,
                       color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
@@ -281,7 +282,7 @@ class _WindowTile extends StatelessWidget {
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: () => _pickStart(context),
-                  icon: const Icon(Icons.schedule),
+                  icon: const Icon(CupertinoIcons.time, size: 18),
                   label: Text('${l10n.reminderWindowFrom} ${_format(context, startMinutes)}'),
                 ),
               ),
@@ -289,7 +290,7 @@ class _WindowTile extends StatelessWidget {
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: () => _pickEnd(context),
-                  icon: const Icon(Icons.schedule_outlined),
+                  icon: const Icon(CupertinoIcons.time, size: 18),
                   label: Text('${l10n.reminderWindowTo} ${_format(context, endMinutes)}'),
                 ),
               ),
@@ -408,7 +409,7 @@ class _LocaleTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return ListTile(
-      leading: const Icon(Icons.language_outlined),
+      leading: const Icon(CupertinoIcons.globe),
       title: Text(l10n.language),
       trailing: DropdownButton<String?>(
         value: localeCode,
@@ -433,7 +434,7 @@ class _ThemeTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return ListTile(
-      leading: const Icon(Icons.dark_mode_outlined),
+      leading: const Icon(CupertinoIcons.moon),
       title: Text(l10n.themeMode),
       trailing: DropdownButton<String>(
         value: themeMode,

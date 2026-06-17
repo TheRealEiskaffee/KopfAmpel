@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -138,7 +139,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         elevation: 0,
         leading: _index > 0 && !_busy
             ? IconButton(
-                icon: const Icon(Icons.arrow_back),
+                icon: const Icon(CupertinoIcons.back),
                 onPressed: _back,
                 tooltip: l10n.onboardingBack,
               )
@@ -403,14 +404,14 @@ class _ChoicePage extends StatelessWidget {
       body: l10n.onboardingChoiceBody,
       actions: [
         _ChoiceCard(
-          icon: Icons.file_upload_outlined,
+          icon: CupertinoIcons.arrow_down_doc,
           title: l10n.onboardingChoiceImport,
           subtitle: l10n.onboardingChoiceImportDescription,
           onTap: onImport,
         ),
         const SizedBox(height: 12),
         _ChoiceCard(
-          icon: Icons.auto_awesome_outlined,
+          icon: CupertinoIcons.sparkles,
           title: l10n.onboardingChoiceFresh,
           subtitle: l10n.onboardingChoiceFreshDescription,
           onTap: onFresh,
@@ -469,7 +470,7 @@ class _ChoiceCard extends StatelessWidget {
                   ],
                 ),
               ),
-              const Icon(Icons.chevron_right),
+              const Icon(CupertinoIcons.chevron_right, size: 18),
             ],
           ),
         ),
@@ -499,8 +500,8 @@ class _AppearancePage extends StatelessWidget {
     final theme = Theme.of(context);
     return _OnboardingPage(
       icon: Icon(
-        Icons.palette_outlined,
-        size: 72,
+        CupertinoIcons.paintbrush,
+        size: 64,
         color: theme.colorScheme.primary,
       ),
       title: l10n.onboardingAppearanceTitle,
@@ -581,8 +582,8 @@ class _PermissionsPage extends StatelessWidget {
     final theme = Theme.of(context);
     return _OnboardingPage(
       icon: Icon(
-        Icons.notifications_active_outlined,
-        size: 72,
+        CupertinoIcons.bell,
+        size: 64,
         color: theme.colorScheme.primary,
       ),
       title: l10n.onboardingPermissionsTitle,
@@ -671,8 +672,8 @@ class _ReminderPage extends StatelessWidget {
     final theme = Theme.of(context);
     return _OnboardingPage(
       icon: Icon(
-        Icons.schedule,
-        size: 72,
+        CupertinoIcons.time,
+        size: 64,
         color: theme.colorScheme.primary,
       ),
       title: l10n.onboardingReminderTitle,
@@ -684,7 +685,7 @@ class _ReminderPage extends StatelessWidget {
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: () => _pickStart(context),
-                  icon: const Icon(Icons.schedule),
+                  icon: const Icon(CupertinoIcons.time, size: 18),
                   label: Text(
                     '${l10n.reminderWindowFrom} ${_format(context, startMinutes)}',
                   ),
@@ -694,7 +695,7 @@ class _ReminderPage extends StatelessWidget {
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: () => _pickEnd(context),
-                  icon: const Icon(Icons.schedule_outlined),
+                  icon: const Icon(CupertinoIcons.time, size: 18),
                   label: Text(
                     '${l10n.reminderWindowTo} ${_format(context, endMinutes)}',
                   ),
@@ -705,7 +706,7 @@ class _ReminderPage extends StatelessWidget {
           const SizedBox(height: 16),
           Card(
             color: theme.colorScheme.surfaceContainerHighest,
-            child: SwitchListTile(
+            child: SwitchListTile.adaptive(
               title: Text(l10n.onboardingRepeatLabel),
               subtitle: Text(l10n.reminderRepeatsDescription),
               value: repeatEnabled,
@@ -734,8 +735,8 @@ class _TagsPage extends ConsumerWidget {
     final theme = Theme.of(context);
     return _OnboardingPage(
       icon: Icon(
-        Icons.label_outline,
-        size: 72,
+        CupertinoIcons.tag,
+        size: 64,
         color: theme.colorScheme.primary,
       ),
       title: l10n.onboardingTagsTitle,
@@ -744,21 +745,21 @@ class _TagsPage extends ConsumerWidget {
         children: [
           OutlinedButton.icon(
             onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
+              CupertinoPageRoute<void>(
                 builder: (_) => const TagManagementScreen(kind: TagKind.trigger),
               ),
             ),
-            icon: const Icon(Icons.tag_outlined),
+            icon: const Icon(CupertinoIcons.tag, size: 18),
             label: Text(l10n.onboardingTagsManageTriggers),
           ),
           const SizedBox(height: 10),
           OutlinedButton.icon(
             onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
+              CupertinoPageRoute<void>(
                 builder: (_) => const TagManagementScreen(kind: TagKind.medication),
               ),
             ),
-            icon: const Icon(Icons.medication_outlined),
+            icon: const Icon(CupertinoIcons.bandage, size: 18),
             label: Text(l10n.onboardingTagsManageMedications),
           ),
         ],
@@ -790,8 +791,8 @@ class _DonePage extends StatelessWidget {
     final theme = Theme.of(context);
     return _OnboardingPage(
       icon: Icon(
-        Icons.celebration_outlined,
-        size: 72,
+        CupertinoIcons.checkmark_seal_fill,
+        size: 64,
         color: theme.colorScheme.primary,
       ),
       title: l10n.onboardingDoneTitle,

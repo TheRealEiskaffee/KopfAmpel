@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -26,18 +27,18 @@ class AppShell extends StatelessWidget {
         onDestinationSelected: _goBranch,
         destinations: [
           NavigationDestination(
-            icon: const Icon(Icons.calendar_month_outlined),
-            selectedIcon: const Icon(Icons.calendar_month),
+            icon: const Icon(CupertinoIcons.calendar),
+            selectedIcon: const Icon(CupertinoIcons.calendar_today),
             label: l10n.navCalendar,
           ),
           NavigationDestination(
-            icon: const Icon(Icons.bar_chart_outlined),
-            selectedIcon: const Icon(Icons.bar_chart),
+            icon: const Icon(CupertinoIcons.chart_bar),
+            selectedIcon: const Icon(CupertinoIcons.chart_bar_fill),
             label: l10n.navStats,
           ),
           NavigationDestination(
-            icon: const Icon(Icons.settings_outlined),
-            selectedIcon: const Icon(Icons.settings),
+            icon: const Icon(CupertinoIcons.settings),
+            selectedIcon: const Icon(CupertinoIcons.settings_solid),
             label: l10n.navSettings,
           ),
         ],

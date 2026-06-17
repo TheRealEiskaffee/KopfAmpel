@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AppTheme {
@@ -32,6 +33,14 @@ class AppTheme {
       visualDensity: VisualDensity.adaptivePlatformDensity,
       // Replace the loud splash with a soft fade — closer to iOS feel.
       splashFactory: InkSparkle.splashFactory,
+      // Push routes slide in horizontally on both platforms (iOS default,
+      // forced here for Android too so the look is consistent).
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: {
+          TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+        },
+      ),
       appBarTheme: AppBarTheme(
         centerTitle: true,
         backgroundColor: scheme.surface,

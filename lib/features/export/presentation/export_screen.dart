@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -147,17 +148,17 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
                 title: l10n.exportSection,
                 children: [
                   ListTile(
-                    leading: const Icon(Icons.code),
+                    leading: const Icon(CupertinoIcons.chevron_left_slash_chevron_right),
                     title: Text(l10n.exportJson),
                     subtitle: Text(l10n.exportJsonDescription),
-                    trailing: const Icon(Icons.ios_share),
+                    trailing: const Icon(CupertinoIcons.share),
                     onTap: _busy ? null : _exportJson,
                   ),
                   ListTile(
-                    leading: const Icon(Icons.table_chart_outlined),
+                    leading: const Icon(CupertinoIcons.square_grid_2x2),
                     title: Text(l10n.exportCsv),
                     subtitle: Text(l10n.exportCsvDescription),
-                    trailing: const Icon(Icons.ios_share),
+                    trailing: const Icon(CupertinoIcons.share),
                     onTap: _busy ? null : _exportCsv,
                   ),
                   const Divider(height: 1),
@@ -175,7 +176,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ),
-                  SwitchListTile(
+                  SwitchListTile.adaptive(
                     title: Text(l10n.exportPdfAllTime),
                     value: _pdfAllTime,
                     onChanged: (v) => setState(() => _pdfAllTime = v),
@@ -183,7 +184,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
                   if (!_pdfAllTime)
                     ListTile(
                       title: Text(monthLabel),
-                      leading: const Icon(Icons.calendar_month_outlined),
+                      leading: const Icon(CupertinoIcons.calendar),
                       onTap: () async {
                         final picked = await showDatePicker(
                           context: context,
@@ -201,7 +202,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
                     padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                     child: FilledButton.icon(
                       onPressed: _busy ? null : _exportPdf,
-                      icon: const Icon(Icons.picture_as_pdf_outlined),
+                      icon: const Icon(CupertinoIcons.doc_text, size: 18),
                       label: Text(l10n.exportPdf),
                     ),
                   ),
@@ -211,7 +212,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
                 title: l10n.importSection,
                 children: [
                   ListTile(
-                    leading: const Icon(Icons.file_upload_outlined),
+                    leading: const Icon(CupertinoIcons.arrow_down_doc),
                     title: Text(l10n.importJson),
                     subtitle: Text(l10n.importJsonDescription),
                     onTap: _busy ? null : _import,

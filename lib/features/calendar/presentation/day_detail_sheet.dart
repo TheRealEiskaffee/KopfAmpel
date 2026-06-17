@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -212,7 +213,7 @@ class _DayDetailSheetState extends ConsumerState<DayDetailSheet> {
                   Expanded(
                     child: OutlinedButton.icon(
                       onPressed: _delete,
-                      icon: const Icon(Icons.delete_outline),
+                      icon: const Icon(CupertinoIcons.delete, size: 18),
                       label: Text(l10n.delete),
                     ),
                   ),

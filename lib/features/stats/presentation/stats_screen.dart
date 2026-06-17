@@ -1,4 +1,5 @@
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -152,7 +153,7 @@ class _MetricsRow extends StatelessWidget {
           child: _MetricCard(
             label: l10n.statsWeeklyAverage,
             value: l10n.statsWeeklyAverageValue(avg),
-            icon: Icons.av_timer_outlined,
+            icon: CupertinoIcons.timer,
           ),
         ),
         const SizedBox(width: 8),
@@ -160,7 +161,7 @@ class _MetricsRow extends StatelessWidget {
           child: _MetricCard(
             label: l10n.statsLongestStreak,
             value: l10n.statsStreakDays(stats.longestFreeStreak),
-            icon: Icons.emoji_events_outlined,
+            icon: CupertinoIcons.rosette,
             highlight: true,
           ),
         ),
@@ -169,7 +170,7 @@ class _MetricsRow extends StatelessWidget {
           child: _MetricCard(
             label: l10n.statsCurrentStreak,
             value: l10n.statsStreakDays(stats.currentFreeStreak),
-            icon: Icons.local_fire_department_outlined,
+            icon: CupertinoIcons.flame,
           ),
         ),
       ],

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -25,7 +26,7 @@ class TagManagementScreen extends ConsumerWidget {
       appBar: AppBar(title: Text(title)),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddDialog(context, ref),
-        child: const Icon(Icons.add),
+        child: const Icon(CupertinoIcons.add),
       ),
       body: tagsAsync.when(
         data: (tags) {
@@ -106,11 +107,11 @@ class _TagTile extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           IconButton(
-            icon: const Icon(Icons.edit_outlined),
+            icon: const Icon(CupertinoIcons.pencil),
             onPressed: () => _rename(context, ref),
           ),
           IconButton(
-            icon: const Icon(Icons.delete_outline),
+            icon: const Icon(CupertinoIcons.delete),
             onPressed: () => _delete(context, ref),
           ),
         ],
