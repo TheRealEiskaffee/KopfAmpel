@@ -332,4 +332,42 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get pdfFooter => 'Generiert von KopfAmpel';
+
+  @override
+  String get statsRange7 => '7 Tage';
+
+  @override
+  String get statsRange30 => '30 Tage';
+
+  @override
+  String get statsRange90 => '90 Tage';
+
+  @override
+  String get statsRangeAll => 'Gesamt';
+
+  @override
+  String get statsTotalEntries => 'Tage mit Eintrag';
+
+  @override
+  String get statsHeadacheDays => 'Tage mit Kopfschmerzen';
+
+  @override
+  String statsHeadacheRate(int rate) {
+    return '$rate% Kopfschmerz-Tage';
+  }
+
+  @override
+  String get statsDistribution => 'Verteilung';
+
+  @override
+  String get statsTopTriggers => 'Häufigste Trigger';
+
+  @override
+  String get statsTopMedications => 'Häufigste Medikamente';
+
+  @override
+  String get statsNothing => 'Noch keine Daten in diesem Zeitraum.';
+
+  @override
+  String get countSuffix => '× ';
 }

@@ -697,6 +697,78 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Generiert von KopfAmpel'**
   String get pdfFooter;
+
+  /// No description provided for @statsRange7.
+  ///
+  /// In de, this message translates to:
+  /// **'7 Tage'**
+  String get statsRange7;
+
+  /// No description provided for @statsRange30.
+  ///
+  /// In de, this message translates to:
+  /// **'30 Tage'**
+  String get statsRange30;
+
+  /// No description provided for @statsRange90.
+  ///
+  /// In de, this message translates to:
+  /// **'90 Tage'**
+  String get statsRange90;
+
+  /// No description provided for @statsRangeAll.
+  ///
+  /// In de, this message translates to:
+  /// **'Gesamt'**
+  String get statsRangeAll;
+
+  /// No description provided for @statsTotalEntries.
+  ///
+  /// In de, this message translates to:
+  /// **'Tage mit Eintrag'**
+  String get statsTotalEntries;
+
+  /// No description provided for @statsHeadacheDays.
+  ///
+  /// In de, this message translates to:
+  /// **'Tage mit Kopfschmerzen'**
+  String get statsHeadacheDays;
+
+  /// No description provided for @statsHeadacheRate.
+  ///
+  /// In de, this message translates to:
+  /// **'{rate}% Kopfschmerz-Tage'**
+  String statsHeadacheRate(int rate);
+
+  /// No description provided for @statsDistribution.
+  ///
+  /// In de, this message translates to:
+  /// **'Verteilung'**
+  String get statsDistribution;
+
+  /// No description provided for @statsTopTriggers.
+  ///
+  /// In de, this message translates to:
+  /// **'Häufigste Trigger'**
+  String get statsTopTriggers;
+
+  /// No description provided for @statsTopMedications.
+  ///
+  /// In de, this message translates to:
+  /// **'Häufigste Medikamente'**
+  String get statsTopMedications;
+
+  /// No description provided for @statsNothing.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine Daten in diesem Zeitraum.'**
+  String get statsNothing;
+
+  /// No description provided for @countSuffix.
+  ///
+  /// In de, this message translates to:
+  /// **'× '**
+  String get countSuffix;
 }
 
 class _AppLocalizationsDelegate

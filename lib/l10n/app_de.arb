@@ -114,5 +114,22 @@
   "pdfStatsRed": "Stark",
   "pdfStatsNone": "Ohne Kopfschmerz",
   "pdfEntriesHeading": "Einträge",
-  "pdfFooter": "Generiert von KopfAmpel"
+  "pdfFooter": "Generiert von KopfAmpel",
+  "statsRange7": "7 Tage",
+  "statsRange30": "30 Tage",
+  "statsRange90": "90 Tage",
+  "statsRangeAll": "Gesamt",
+  "statsTotalEntries": "Tage mit Eintrag",
+  "statsHeadacheDays": "Tage mit Kopfschmerzen",
+  "statsHeadacheRate": "{rate}% Kopfschmerz-Tage",
+  "@statsHeadacheRate": {
+    "placeholders": {
+      "rate": { "type": "int" }
+    }
+  },
+  "statsDistribution": "Verteilung",
+  "statsTopTriggers": "Häufigste Trigger",
+  "statsTopMedications": "Häufigste Medikamente",
+  "statsNothing": "Noch keine Daten in diesem Zeitraum.",
+  "countSuffix": "× "
 }
