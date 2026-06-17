@@ -1,0 +1,20 @@
+{
+  "@@locale": "de",
+  "appTitle": "KopfAmpel",
+  "navCalendar": "Kalender",
+  "navStats": "Statistik",
+  "navSettings": "Einstellungen",
+  "calendarTitle": "Kalender",
+  "statsTitle": "Statistik",
+  "settingsTitle": "Einstellungen",
+  "statsPlaceholder": "Statistiken erscheinen, sobald Einträge vorhanden sind.",
+  "settingsPlaceholder": "Hier kannst du später Erinnerungen, Trigger und Export einstellen.",
+  "severityNone": "Kein Kopfschmerz",
+  "severityGreen": "Leicht",
+  "severityYellow": "Mittel",
+  "severityRed": "Stark",
+  "save": "Speichern",
+  "cancel": "Abbrechen",
+  "delete": "Löschen",
+  "today": "Heute"
+}

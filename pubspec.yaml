@@ -1,0 +1,71 @@
+name: kopfampel
+description: "KopfAmpel — privates Kopfschmerz-Tagebuch"
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.12.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # State management
+  flutter_riverpod: ^2.6.1
+  riverpod_annotation: ^2.6.1
+
+  # Database
+  drift: ^2.21.0
+  drift_flutter: ^0.2.4
+  sqlite3_flutter_libs: ^0.5.27
+
+  # Routing
+  go_router: ^14.6.0
+
+  # Calendar UI
+  table_calendar: ^3.1.2
+
+  # Notifications & background
+  flutter_local_notifications: ^18.0.1
+  timezone: ^0.10.0
+  flutter_timezone: ^4.1.0
+  workmanager: ^0.5.2
+  permission_handler: ^11.3.1
+
+  # I18n & formatting
+  intl: any
+
+  # Export / Import
+  pdf: ^3.11.1
+  printing: ^5.13.4
+  csv: ^6.0.0
+  file_picker: ^8.1.4
+  share_plus: ^10.1.2
+  path_provider: ^2.1.5
+  path: ^1.9.0
+
+  # Charts (Phase 7)
+  fl_chart: ^0.69.0
+
+  # Icons
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  very_good_analysis: ^7.0.0
+  mocktail: ^1.0.4
+  build_runner: ^2.4.13
+  drift_dev: ^2.21.0
+  riverpod_generator: ^2.6.3
+  custom_lint: ^0.7.0
+  riverpod_lint: ^2.6.3
+
+flutter:
+  uses-material-design: true
+  generate: true
+  assets:
+    - assets/icons/

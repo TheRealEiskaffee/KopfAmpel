@@ -1,0 +1,20 @@
+{
+  "@@locale": "en",
+  "appTitle": "KopfAmpel",
+  "navCalendar": "Calendar",
+  "navStats": "Stats",
+  "navSettings": "Settings",
+  "calendarTitle": "Calendar",
+  "statsTitle": "Stats",
+  "settingsTitle": "Settings",
+  "statsPlaceholder": "Stats will appear once you have entries.",
+  "settingsPlaceholder": "You will configure reminders, triggers and export here.",
+  "severityNone": "No headache",
+  "severityGreen": "Mild",
+  "severityYellow": "Moderate",
+  "severityRed": "Severe",
+  "save": "Save",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "today": "Today"
+}
