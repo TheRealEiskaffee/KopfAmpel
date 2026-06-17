@@ -16,5 +16,23 @@
   "save": "Speichern",
   "cancel": "Abbrechen",
   "delete": "Löschen",
-  "today": "Heute"
+  "today": "Heute",
+  "selectSeverity": "Wie stark waren die Kopfschmerzen?",
+  "noteLabel": "Notiz",
+  "noteHint": "Optionale Anmerkung zu diesem Tag",
+  "triggersLabel": "Trigger",
+  "medicationsLabel": "Medikamente",
+  "doseHint": "Dosis (optional)",
+  "addTag": "Hinzufügen",
+  "addTagDialogTitle": "Neuen Tag anlegen",
+  "addTagHint": "Name",
+  "noEntry": "Noch kein Eintrag",
+  "deleteEntryTitle": "Eintrag löschen?",
+  "deleteEntryBody": "Der Eintrag für diesen Tag wird gelöscht.",
+  "loadFailed": "Konnte nicht geladen werden: {error}",
+  "@loadFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  }
 }

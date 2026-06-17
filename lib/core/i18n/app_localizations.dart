@@ -199,6 +199,84 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Heute'**
   String get today;
+
+  /// No description provided for @selectSeverity.
+  ///
+  /// In de, this message translates to:
+  /// **'Wie stark waren die Kopfschmerzen?'**
+  String get selectSeverity;
+
+  /// No description provided for @noteLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Notiz'**
+  String get noteLabel;
+
+  /// No description provided for @noteHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Optionale Anmerkung zu diesem Tag'**
+  String get noteHint;
+
+  /// No description provided for @triggersLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Trigger'**
+  String get triggersLabel;
+
+  /// No description provided for @medicationsLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Medikamente'**
+  String get medicationsLabel;
+
+  /// No description provided for @doseHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Dosis (optional)'**
+  String get doseHint;
+
+  /// No description provided for @addTag.
+  ///
+  /// In de, this message translates to:
+  /// **'Hinzufügen'**
+  String get addTag;
+
+  /// No description provided for @addTagDialogTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Neuen Tag anlegen'**
+  String get addTagDialogTitle;
+
+  /// No description provided for @addTagHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Name'**
+  String get addTagHint;
+
+  /// No description provided for @noEntry.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch kein Eintrag'**
+  String get noEntry;
+
+  /// No description provided for @deleteEntryTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Eintrag löschen?'**
+  String get deleteEntryTitle;
+
+  /// No description provided for @deleteEntryBody.
+  ///
+  /// In de, this message translates to:
+  /// **'Der Eintrag für diesen Tag wird gelöscht.'**
+  String get deleteEntryBody;
+
+  /// No description provided for @loadFailed.
+  ///
+  /// In de, this message translates to:
+  /// **'Konnte nicht geladen werden: {error}'**
+  String loadFailed(String error);
 }
 
 class _AppLocalizationsDelegate

@@ -60,4 +60,45 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get today => 'Heute';
+
+  @override
+  String get selectSeverity => 'Wie stark waren die Kopfschmerzen?';
+
+  @override
+  String get noteLabel => 'Notiz';
+
+  @override
+  String get noteHint => 'Optionale Anmerkung zu diesem Tag';
+
+  @override
+  String get triggersLabel => 'Trigger';
+
+  @override
+  String get medicationsLabel => 'Medikamente';
+
+  @override
+  String get doseHint => 'Dosis (optional)';
+
+  @override
+  String get addTag => 'Hinzufügen';
+
+  @override
+  String get addTagDialogTitle => 'Neuen Tag anlegen';
+
+  @override
+  String get addTagHint => 'Name';
+
+  @override
+  String get noEntry => 'Noch kein Eintrag';
+
+  @override
+  String get deleteEntryTitle => 'Eintrag löschen?';
+
+  @override
+  String get deleteEntryBody => 'Der Eintrag für diesen Tag wird gelöscht.';
+
+  @override
+  String loadFailed(String error) {
+    return 'Konnte nicht geladen werden: $error';
+  }
 }

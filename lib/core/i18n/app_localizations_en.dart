@@ -59,4 +59,45 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get today => 'Today';
+
+  @override
+  String get selectSeverity => 'How bad was the headache?';
+
+  @override
+  String get noteLabel => 'Note';
+
+  @override
+  String get noteHint => 'Optional note for this day';
+
+  @override
+  String get triggersLabel => 'Triggers';
+
+  @override
+  String get medicationsLabel => 'Medications';
+
+  @override
+  String get doseHint => 'Dose (optional)';
+
+  @override
+  String get addTag => 'Add';
+
+  @override
+  String get addTagDialogTitle => 'Add new tag';
+
+  @override
+  String get addTagHint => 'Name';
+
+  @override
+  String get noEntry => 'No entry yet';
+
+  @override
+  String get deleteEntryTitle => 'Delete entry?';
+
+  @override
+  String get deleteEntryBody => 'The entry for this day will be removed.';
+
+  @override
+  String loadFailed(String error) {
+    return 'Failed to load: $error';
+  }
 }

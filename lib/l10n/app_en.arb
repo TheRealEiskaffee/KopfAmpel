@@ -16,5 +16,23 @@
   "save": "Save",
   "cancel": "Cancel",
   "delete": "Delete",
-  "today": "Today"
+  "today": "Today",
+  "selectSeverity": "How bad was the headache?",
+  "noteLabel": "Note",
+  "noteHint": "Optional note for this day",
+  "triggersLabel": "Triggers",
+  "medicationsLabel": "Medications",
+  "doseHint": "Dose (optional)",
+  "addTag": "Add",
+  "addTagDialogTitle": "Add new tag",
+  "addTagHint": "Name",
+  "noEntry": "No entry yet",
+  "deleteEntryTitle": "Delete entry?",
+  "deleteEntryBody": "The entry for this day will be removed.",
+  "loadFailed": "Failed to load: {error}",
+  "@loadFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  }
 }
