@@ -31,7 +31,6 @@ dependencies:
   flutter_local_notifications: ^18.0.1
   timezone: ^0.10.0
   flutter_timezone: ^4.1.0
-  workmanager: ^0.5.2
   permission_handler: ^11.3.1
 
   # I18n & formatting
@@ -41,7 +40,7 @@ dependencies:
   pdf: ^3.11.1
   printing: ^5.13.4
   csv: ^6.0.0
-  file_picker: ^8.1.4
+  file_picker: ^10.0.0
   share_plus: ^10.1.2
   path_provider: ^2.1.5
   path: ^1.9.0

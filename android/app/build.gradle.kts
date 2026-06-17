@@ -5,7 +5,8 @@ plugins {
 
 android {
     namespace = "app.kopfampel.kopfampel"
-    compileSdk = flutter.compileSdkVersion
+    // file_picker → flutter_plugin_android_lifecycle now require compileSdk 36+.
+    compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -16,8 +17,8 @@ android {
 
     defaultConfig {
         applicationId = "app.kopfampel.kopfampel"
-        minSdk = 23
-        targetSdk = flutter.targetSdkVersion
+        minSdk = flutter.minSdkVersion
+        targetSdk = 36
         versionCode = flutter.versionCode
         versionName = flutter.versionName
         multiDexEnabled = true

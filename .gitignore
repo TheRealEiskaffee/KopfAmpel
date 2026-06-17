@@ -110,6 +110,10 @@ unlinked_spec.ds
 .vscode/
 .claude/
 
+# Release APKs are large binaries; don't track them in git
+*.apk
+*.aab
+
 # Coverage
 coverage/
 
