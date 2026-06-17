@@ -214,5 +214,7 @@
     }
   },
   "onboardingReminderDisabled": "Mitteilungen sind nicht erlaubt. Du kannst die Zeiten trotzdem speichern — sie greifen sobald du Mitteilungen in den iOS-Einstellungen freigibst.",
-  "openSystemSettings": "iOS-Einstellungen öffnen"
+  "openSystemSettings": "iOS-Einstellungen öffnen",
+  "tagGroupCustom": "Eigene",
+  "tagGroupBuiltIn": "Standard"
 }

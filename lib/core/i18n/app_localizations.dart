@@ -1111,6 +1111,18 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'iOS-Einstellungen öffnen'**
   String get openSystemSettings;
+
+  /// No description provided for @tagGroupCustom.
+  ///
+  /// In de, this message translates to:
+  /// **'Eigene'**
+  String get tagGroupCustom;
+
+  /// No description provided for @tagGroupBuiltIn.
+  ///
+  /// In de, this message translates to:
+  /// **'Standard'**
+  String get tagGroupBuiltIn;
 }
 
 class _AppLocalizationsDelegate

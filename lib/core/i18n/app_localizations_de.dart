@@ -579,4 +579,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get openSystemSettings => 'iOS-Einstellungen öffnen';
+
+  @override
+  String get tagGroupCustom => 'Eigene';
+
+  @override
+  String get tagGroupBuiltIn => 'Standard';
 }

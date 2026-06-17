@@ -46,11 +46,26 @@ class TagManagementScreen extends ConsumerWidget {
               ),
             );
           }
-          return ListView.separated(
-            itemCount: tags.length,
-            separatorBuilder: (_, _) => const Divider(height: 1, indent: 16),
-            itemBuilder: (ctx, i) => _TagTile(tag: tags[i], kind: kind),
-          );
+          final custom = tags.where((t) => t.isCustom).toList();
+          final builtIn = tags.where((t) => !t.isCustom).toList();
+
+          final children = <Widget>[];
+          if (custom.isNotEmpty) {
+            children
+              ..add(_SectionHeader(l10n.tagGroupCustom))
+              ..addAll(_intersperse(
+                custom.map((t) => _TagTile(tag: t, kind: kind)),
+              ));
+          }
+          if (builtIn.isNotEmpty) {
+            children
+              ..add(_SectionHeader(l10n.tagGroupBuiltIn))
+              ..addAll(_intersperse(
+                builtIn.map((t) => _TagTile(tag: t, kind: kind)),
+              ));
+          }
+          children.add(const SizedBox(height: 24));
+          return ListView(children: children);
         },
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text(l10n.loadFailed(e.toString()))),
@@ -93,6 +108,39 @@ class TagManagementScreen extends ConsumerWidget {
   }
 }
 
+/// Inserts a thin divider between each [tiles] item without trailing one
+/// after the last row. Matches iOS' grouped-list look between section header
+/// and the rows below.
+Iterable<Widget> _intersperse(Iterable<Widget> tiles) sync* {
+  var first = true;
+  for (final t in tiles) {
+    if (!first) yield const Divider(height: 1, indent: 16);
+    first = false;
+    yield t;
+  }
+}
+
+class _SectionHeader extends StatelessWidget {
+  const _SectionHeader(this.title);
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
+      child: Text(
+        title.toUpperCase(),
+        style: theme.textTheme.labelSmall?.copyWith(
+          color: theme.colorScheme.onSurfaceVariant,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 0.8,
+        ),
+      ),
+    );
+  }
+}
+
 class _TagTile extends ConsumerWidget {
   const _TagTile({required this.tag, required this.kind});
 
@@ -101,12 +149,10 @@ class _TagTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
 
     return ListTile(
       title: Text(tag.name),
-      subtitle: tag.isCustom ? null : Text(l10n.languageSystem),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
