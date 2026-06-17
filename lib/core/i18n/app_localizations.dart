@@ -1099,6 +1099,18 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Export fehlgeschlagen: {error}'**
   String exportFailed(String error);
+
+  /// No description provided for @onboardingReminderDisabled.
+  ///
+  /// In de, this message translates to:
+  /// **'Mitteilungen sind nicht erlaubt. Du kannst die Zeiten trotzdem speichern — sie greifen sobald du Mitteilungen in den iOS-Einstellungen freigibst.'**
+  String get onboardingReminderDisabled;
+
+  /// No description provided for @openSystemSettings.
+  ///
+  /// In de, this message translates to:
+  /// **'iOS-Einstellungen öffnen'**
+  String get openSystemSettings;
 }
 
 class _AppLocalizationsDelegate

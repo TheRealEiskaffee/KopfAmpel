@@ -571,4 +571,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String exportFailed(String error) {
     return 'Export failed: $error';
   }
+
+  @override
+  String get onboardingReminderDisabled =>
+      'Notifications are not allowed. You can still save the times — they take effect once you enable notifications in iOS Settings.';
+
+  @override
+  String get openSystemSettings => 'Open iOS Settings';
 }

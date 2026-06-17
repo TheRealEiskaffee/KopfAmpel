@@ -52,7 +52,10 @@ class _NotificationBootstrapperState extends ConsumerState<NotificationBootstrap
     final strings = notificationStringsOf(context);
     final service = ref.read(notificationServiceProvider);
     await service.init(strings: strings);
-    await service.requestPermissions();
+    // Don't request permission silently on every app launch — onboarding's
+    // explicit "Erlauben" button is the only place that asks. Otherwise iOS
+    // shows the system dialog at the wrong moment (or not at all, since the
+    // request only triggers once per install).
     await ref.read(notificationSchedulerProvider).rescheduleHorizon(strings: strings);
   }
 

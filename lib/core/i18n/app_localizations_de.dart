@@ -572,4 +572,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String exportFailed(String error) {
     return 'Export fehlgeschlagen: $error';
   }
+
+  @override
+  String get onboardingReminderDisabled =>
+      'Mitteilungen sind nicht erlaubt. Du kannst die Zeiten trotzdem speichern — sie greifen sobald du Mitteilungen in den iOS-Einstellungen freigibst.';
+
+  @override
+  String get openSystemSettings => 'iOS-Einstellungen öffnen';
 }

@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../../app/theme/ampel_colors.dart';
 import '../../../core/domain/tag_kind.dart';
@@ -48,6 +49,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   String? _localeCode;
   String _themeMode = 'system';
   bool _repeatEnabled = true;
+  bool _notificationsGranted = false;
   bool _imported = false;
   int _importedCount = 0;
 
@@ -180,10 +182,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       ),
                       _PermissionsPage(
                         onAllow: () async {
-                          await ref
+                          final granted = await ref
                               .read(notificationServiceProvider)
                               .requestPermissions();
                           if (!mounted) return;
+                          setState(() => _notificationsGranted = granted);
                           await _next();
                         },
                         onLater: _next,
@@ -192,6 +195,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                         startMinutes: _startMinutes,
                         endMinutes: _endMinutes,
                         repeatEnabled: _repeatEnabled,
+                        disabled: !_notificationsGranted,
                         onWindow: (start, end) {
                           setState(() {
                             _startMinutes = start;
@@ -602,6 +606,7 @@ class _ReminderPage extends StatelessWidget {
     required this.startMinutes,
     required this.endMinutes,
     required this.repeatEnabled,
+    required this.disabled,
     required this.onWindow,
     required this.onRepeat,
     required this.onContinue,
@@ -610,6 +615,7 @@ class _ReminderPage extends StatelessWidget {
   final int startMinutes;
   final int endMinutes;
   final bool repeatEnabled;
+  final bool disabled;
   final void Function(int start, int end) onWindow;
   final ValueChanged<bool> onRepeat;
   final Future<void> Function() onContinue;
@@ -664,37 +670,54 @@ class _ReminderPage extends StatelessWidget {
       body: l10n.onboardingReminderBody,
       extra: Column(
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: () => _pickStart(context),
-                  icon: const Icon(CupertinoIcons.time, size: 18),
-                  label: Text(
-                    '${l10n.reminderWindowFrom} ${_format(context, startMinutes)}',
+          if (disabled) ...[
+            _DisabledNotice(
+              text: l10n.onboardingReminderDisabled,
+              openSettingsLabel: l10n.openSystemSettings,
+            ),
+            const SizedBox(height: 16),
+          ],
+          IgnorePointer(
+            ignoring: disabled,
+            child: Opacity(
+              opacity: disabled ? 0.4 : 1,
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: () => _pickStart(context),
+                          icon: const Icon(CupertinoIcons.time, size: 18),
+                          label: Text(
+                            '${l10n.reminderWindowFrom} ${_format(context, startMinutes)}',
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: () => _pickEnd(context),
+                          icon: const Icon(CupertinoIcons.time, size: 18),
+                          label: Text(
+                            '${l10n.reminderWindowTo} ${_format(context, endMinutes)}',
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: () => _pickEnd(context),
-                  icon: const Icon(CupertinoIcons.time, size: 18),
-                  label: Text(
-                    '${l10n.reminderWindowTo} ${_format(context, endMinutes)}',
+                  const SizedBox(height: 16),
+                  Card(
+                    color: theme.colorScheme.surfaceContainerHighest,
+                    child: SwitchListTile.adaptive(
+                      title: Text(l10n.onboardingRepeatLabel),
+                      subtitle: Text(l10n.reminderRepeatsDescription),
+                      value: repeatEnabled,
+                      onChanged: onRepeat,
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Card(
-            color: theme.colorScheme.surfaceContainerHighest,
-            child: SwitchListTile.adaptive(
-              title: Text(l10n.onboardingRepeatLabel),
-              subtitle: Text(l10n.reminderRepeatsDescription),
-              value: repeatEnabled,
-              onChanged: onRepeat,
             ),
           ),
         ],
@@ -705,6 +728,60 @@ class _ReminderPage extends StatelessWidget {
           child: Text(l10n.onboardingContinue),
         ),
       ],
+    );
+  }
+}
+
+class _DisabledNotice extends StatelessWidget {
+  const _DisabledNotice({
+    required this.text,
+    required this.openSettingsLabel,
+  });
+
+  final String text;
+  final String openSettingsLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: scheme.errorContainer.withValues(alpha: 0.45),
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                CupertinoIcons.bell_slash,
+                size: 18,
+                color: scheme.onErrorContainer,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  text,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: scheme.onErrorContainer,
+                      ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton(
+              onPressed: openAppSettings,
+              child: Text(openSettingsLabel),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
