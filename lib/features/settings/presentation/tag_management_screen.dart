@@ -104,7 +104,12 @@ class TagManagementScreen extends ConsumerWidget {
       ),
     );
     if (name == null || name.isEmpty) return;
-    await ref.read(tagsDaoProvider).insertIfMissing(name: name, kind: kind.value);
+    // User-created tags always belong in the "Eigene" group.
+    await ref.read(tagsDaoProvider).insertIfMissing(
+          name: name,
+          kind: kind.value,
+          isCustom: true,
+        );
   }
 }
 
