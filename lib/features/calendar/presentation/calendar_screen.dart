@@ -66,6 +66,11 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                 selectedDayPredicate: (d) =>
                     _selectedDay != null && isSameDay(d, _selectedDay!),
                 calendarFormat: _format,
+                availableCalendarFormats: {
+                  CalendarFormat.month: l10n.calendarFormatMonth,
+                  CalendarFormat.twoWeeks: l10n.calendarFormatTwoWeeks,
+                  CalendarFormat.week: l10n.calendarFormatWeek,
+                },
                 onFormatChanged: (f) => setState(() => _format = f),
                 startingDayOfWeek: StartingDayOfWeek.monday,
                 onDaySelected: (selected, focused) => _openDetail(selected),

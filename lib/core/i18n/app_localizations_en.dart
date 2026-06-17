@@ -487,4 +487,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingBack => 'Back';
+
+  @override
+  String get calendarFormatMonth => 'Month';
+
+  @override
+  String get calendarFormatTwoWeeks => '2 weeks';
+
+  @override
+  String get calendarFormatWeek => 'Week';
 }

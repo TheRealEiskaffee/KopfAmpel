@@ -169,5 +169,8 @@
   },
   "onboardingStart": "Los geht's",
   "onboardingImportRunning": "Wird importiert…",
-  "onboardingBack": "Zurück"
+  "onboardingBack": "Zurück",
+  "calendarFormatMonth": "Monat",
+  "calendarFormatTwoWeeks": "2 Wochen",
+  "calendarFormatWeek": "Woche"
 }

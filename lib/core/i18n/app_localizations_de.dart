@@ -488,4 +488,13 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get onboardingBack => 'Zurück';
+
+  @override
+  String get calendarFormatMonth => 'Monat';
+
+  @override
+  String get calendarFormatTwoWeeks => '2 Wochen';
+
+  @override
+  String get calendarFormatWeek => 'Woche';
 }

@@ -967,6 +967,24 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Zurück'**
   String get onboardingBack;
+
+  /// No description provided for @calendarFormatMonth.
+  ///
+  /// In de, this message translates to:
+  /// **'Monat'**
+  String get calendarFormatMonth;
+
+  /// No description provided for @calendarFormatTwoWeeks.
+  ///
+  /// In de, this message translates to:
+  /// **'2 Wochen'**
+  String get calendarFormatTwoWeeks;
+
+  /// No description provided for @calendarFormatWeek.
+  ///
+  /// In de, this message translates to:
+  /// **'Woche'**
+  String get calendarFormatWeek;
 }
 
 class _AppLocalizationsDelegate
