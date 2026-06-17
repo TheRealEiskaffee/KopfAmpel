@@ -104,46 +104,41 @@ class _TagTile extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
 
-    return Dismissible(
-      key: ValueKey('tag-${tag.id}'),
-      direction: DismissDirection.endToStart,
-      background: Container(
-        color: scheme.error,
-        alignment: Alignment.centerRight,
-        padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(CupertinoIcons.delete, color: scheme.onError),
-            const SizedBox(width: 8),
-            Text(
-              l10n.delete,
-              style: TextStyle(
-                color: scheme.onError,
-                fontWeight: FontWeight.w600,
-              ),
+    return ListTile(
+      title: Text(tag.name),
+      subtitle: tag.isCustom ? null : Text(l10n.languageSystem),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CupertinoButton(
+            padding: EdgeInsets.zero,
+            minimumSize: const Size.square(36),
+            onPressed: () => _rename(context, ref),
+            child: Icon(
+              CupertinoIcons.pencil,
+              size: 20,
+              color: scheme.primary,
             ),
-          ],
-        ),
-      ),
-      confirmDismiss: (_) => _confirmDelete(context),
-      onDismissed: (_) async {
-        await ref.read(tagsDaoProvider).deleteById(tag.id);
-      },
-      child: ColoredBox(
-        color: scheme.surface,
-        child: ListTile(
-          title: Text(tag.name),
-          subtitle: tag.isCustom ? null : Text(l10n.languageSystem),
-          onTap: () => _rename(context, ref),
-        ),
+          ),
+          const SizedBox(width: 4),
+          CupertinoButton(
+            padding: EdgeInsets.zero,
+            minimumSize: const Size.square(36),
+            onPressed: () => _delete(context, ref),
+            child: Icon(
+              CupertinoIcons.trash,
+              size: 20,
+              color: scheme.error,
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Future<bool?> _confirmDelete(BuildContext context) {
+  Future<void> _delete(BuildContext context, WidgetRef ref) async {
     final l10n = AppLocalizations.of(context);
-    return showCupertinoDialog<bool>(
+    final confirmed = await showCupertinoDialog<bool>(
       context: context,
       barrierDismissible: true,
       builder: (ctx) => CupertinoAlertDialog(
@@ -165,6 +160,8 @@ class _TagTile extends ConsumerWidget {
         ],
       ),
     );
+    if (confirmed != true) return;
+    await ref.read(tagsDaoProvider).deleteById(tag.id);
   }
 
   Future<void> _rename(BuildContext context, WidgetRef ref) async {
