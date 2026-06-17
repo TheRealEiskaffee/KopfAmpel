@@ -131,5 +131,17 @@
   "statsTopTriggers": "Top triggers",
   "statsTopMedications": "Top medications",
   "statsNothing": "No data in this range yet.",
-  "countSuffix": "× "
+  "countSuffix": "× ",
+  "onboardingWelcomeTitle": "Welcome to KopfAmpel",
+  "onboardingWelcomeBody": "Log your headache days, spot patterns and stay on top of things. All your data stays on this device.",
+  "onboardingPermissionsTitle": "Reminders",
+  "onboardingPermissionsBody": "To send you the daily question, KopfAmpel needs permission to show notifications.",
+  "onboardingPermissionsLaterNote": "You can change this any time in your device settings.",
+  "onboardingTimeTitle": "When should we ask?",
+  "onboardingTimeBody": "Pick a window for the daily reminder. The exact time will be chosen at random inside that range.",
+  "onboardingContinue": "Next",
+  "onboardingAllow": "Allow",
+  "onboardingLater": "Later",
+  "onboardingFinish": "Finish",
+  "onboardingSkip": "Skip"
 }

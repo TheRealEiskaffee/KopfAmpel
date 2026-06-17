@@ -769,6 +769,78 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'× '**
   String get countSuffix;
+
+  /// No description provided for @onboardingWelcomeTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Willkommen bei KopfAmpel'**
+  String get onboardingWelcomeTitle;
+
+  /// No description provided for @onboardingWelcomeBody.
+  ///
+  /// In de, this message translates to:
+  /// **'Halte deine Kopfschmerz-Tage einfach fest, erkenne Muster und behalte den Überblick. Alle Daten bleiben auf deinem Gerät.'**
+  String get onboardingWelcomeBody;
+
+  /// No description provided for @onboardingPermissionsTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Erinnerungen'**
+  String get onboardingPermissionsTitle;
+
+  /// No description provided for @onboardingPermissionsBody.
+  ///
+  /// In de, this message translates to:
+  /// **'Damit dich KopfAmpel einmal am Tag erinnern kann, brauchen wir die Erlaubnis für Benachrichtigungen.'**
+  String get onboardingPermissionsBody;
+
+  /// No description provided for @onboardingPermissionsLaterNote.
+  ///
+  /// In de, this message translates to:
+  /// **'Du kannst die Erlaubnis später jederzeit in den Einstellungen deines Geräts ändern.'**
+  String get onboardingPermissionsLaterNote;
+
+  /// No description provided for @onboardingTimeTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Wann soll erinnert werden?'**
+  String get onboardingTimeTitle;
+
+  /// No description provided for @onboardingTimeBody.
+  ///
+  /// In de, this message translates to:
+  /// **'Wähle ein Zeitfenster, in dem dich die App täglich erinnert. Der genaue Zeitpunkt wird zufällig in diesem Bereich gewählt.'**
+  String get onboardingTimeBody;
+
+  /// No description provided for @onboardingContinue.
+  ///
+  /// In de, this message translates to:
+  /// **'Weiter'**
+  String get onboardingContinue;
+
+  /// No description provided for @onboardingAllow.
+  ///
+  /// In de, this message translates to:
+  /// **'Erlauben'**
+  String get onboardingAllow;
+
+  /// No description provided for @onboardingLater.
+  ///
+  /// In de, this message translates to:
+  /// **'Später'**
+  String get onboardingLater;
+
+  /// No description provided for @onboardingFinish.
+  ///
+  /// In de, this message translates to:
+  /// **'Fertig'**
+  String get onboardingFinish;
+
+  /// No description provided for @onboardingSkip.
+  ///
+  /// In de, this message translates to:
+  /// **'Überspringen'**
+  String get onboardingSkip;
 }
 
 class _AppLocalizationsDelegate

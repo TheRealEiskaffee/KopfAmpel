@@ -369,4 +369,44 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get countSuffix => '× ';
+
+  @override
+  String get onboardingWelcomeTitle => 'Welcome to KopfAmpel';
+
+  @override
+  String get onboardingWelcomeBody =>
+      'Log your headache days, spot patterns and stay on top of things. All your data stays on this device.';
+
+  @override
+  String get onboardingPermissionsTitle => 'Reminders';
+
+  @override
+  String get onboardingPermissionsBody =>
+      'To send you the daily question, KopfAmpel needs permission to show notifications.';
+
+  @override
+  String get onboardingPermissionsLaterNote =>
+      'You can change this any time in your device settings.';
+
+  @override
+  String get onboardingTimeTitle => 'When should we ask?';
+
+  @override
+  String get onboardingTimeBody =>
+      'Pick a window for the daily reminder. The exact time will be chosen at random inside that range.';
+
+  @override
+  String get onboardingContinue => 'Next';
+
+  @override
+  String get onboardingAllow => 'Allow';
+
+  @override
+  String get onboardingLater => 'Later';
+
+  @override
+  String get onboardingFinish => 'Finish';
+
+  @override
+  String get onboardingSkip => 'Skip';
 }

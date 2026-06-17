@@ -7,12 +7,11 @@ import 'router.dart';
 import 'theme/app_theme.dart';
 
 class KopfAmpelApp extends ConsumerWidget {
-  KopfAmpelApp({super.key});
-
-  final _router = buildRouter();
+  const KopfAmpelApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.watch(routerProvider);
     final settingsAsync = ref.watch(settingsProvider);
 
     final locale = settingsAsync.maybeWhen(
@@ -35,7 +34,7 @@ class KopfAmpelApp extends ConsumerWidget {
       darkTheme: AppTheme.dark(),
       themeMode: themeMode,
       locale: locale,
-      routerConfig: _router,
+      routerConfig: router,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
     );

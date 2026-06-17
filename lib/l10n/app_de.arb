@@ -131,5 +131,17 @@
   "statsTopTriggers": "Häufigste Trigger",
   "statsTopMedications": "Häufigste Medikamente",
   "statsNothing": "Noch keine Daten in diesem Zeitraum.",
-  "countSuffix": "× "
+  "countSuffix": "× ",
+  "onboardingWelcomeTitle": "Willkommen bei KopfAmpel",
+  "onboardingWelcomeBody": "Halte deine Kopfschmerz-Tage einfach fest, erkenne Muster und behalte den Überblick. Alle Daten bleiben auf deinem Gerät.",
+  "onboardingPermissionsTitle": "Erinnerungen",
+  "onboardingPermissionsBody": "Damit dich KopfAmpel einmal am Tag erinnern kann, brauchen wir die Erlaubnis für Benachrichtigungen.",
+  "onboardingPermissionsLaterNote": "Du kannst die Erlaubnis später jederzeit in den Einstellungen deines Geräts ändern.",
+  "onboardingTimeTitle": "Wann soll erinnert werden?",
+  "onboardingTimeBody": "Wähle ein Zeitfenster, in dem dich die App täglich erinnert. Der genaue Zeitpunkt wird zufällig in diesem Bereich gewählt.",
+  "onboardingContinue": "Weiter",
+  "onboardingAllow": "Erlauben",
+  "onboardingLater": "Später",
+  "onboardingFinish": "Fertig",
+  "onboardingSkip": "Überspringen"
 }

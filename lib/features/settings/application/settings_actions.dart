@@ -57,6 +57,12 @@ class SettingsActions {
           AppSettingsCompanion(themeMode: Value(mode)),
         );
   }
+
+  Future<void> setOnboardingComplete(bool value) {
+    return _ref.read(settingsDaoProvider).update_(
+          AppSettingsCompanion(onboardingComplete: Value(value)),
+        );
+  }
 }
 
 final settingsActionsProvider = Provider<SettingsActions>(SettingsActions.new);

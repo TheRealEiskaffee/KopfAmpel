@@ -370,4 +370,44 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get countSuffix => '× ';
+
+  @override
+  String get onboardingWelcomeTitle => 'Willkommen bei KopfAmpel';
+
+  @override
+  String get onboardingWelcomeBody =>
+      'Halte deine Kopfschmerz-Tage einfach fest, erkenne Muster und behalte den Überblick. Alle Daten bleiben auf deinem Gerät.';
+
+  @override
+  String get onboardingPermissionsTitle => 'Erinnerungen';
+
+  @override
+  String get onboardingPermissionsBody =>
+      'Damit dich KopfAmpel einmal am Tag erinnern kann, brauchen wir die Erlaubnis für Benachrichtigungen.';
+
+  @override
+  String get onboardingPermissionsLaterNote =>
+      'Du kannst die Erlaubnis später jederzeit in den Einstellungen deines Geräts ändern.';
+
+  @override
+  String get onboardingTimeTitle => 'Wann soll erinnert werden?';
+
+  @override
+  String get onboardingTimeBody =>
+      'Wähle ein Zeitfenster, in dem dich die App täglich erinnert. Der genaue Zeitpunkt wird zufällig in diesem Bereich gewählt.';
+
+  @override
+  String get onboardingContinue => 'Weiter';
+
+  @override
+  String get onboardingAllow => 'Erlauben';
+
+  @override
+  String get onboardingLater => 'Später';
+
+  @override
+  String get onboardingFinish => 'Fertig';
+
+  @override
+  String get onboardingSkip => 'Überspringen';
 }
