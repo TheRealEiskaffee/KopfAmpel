@@ -507,57 +507,41 @@ class _AppearancePage extends StatelessWidget {
       title: l10n.onboardingAppearanceTitle,
       body: l10n.onboardingAppearanceBody,
       extra: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(l10n.language, style: theme.textTheme.titleSmall),
-          ),
+          Text(l10n.language, style: theme.textTheme.titleSmall),
           const SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            children: [
-              ChoiceChip(
-                selected: localeCode == null,
-                label: Text(l10n.languageSystem),
-                onSelected: (_) => onLocale(null),
-              ),
-              ChoiceChip(
-                selected: localeCode == 'de',
-                label: Text(l10n.languageDe),
-                onSelected: (_) => onLocale('de'),
-              ),
-              ChoiceChip(
-                selected: localeCode == 'en',
-                label: Text(l10n.languageEn),
-                onSelected: (_) => onLocale('en'),
-              ),
-            ],
+          SizedBox(
+            height: 32,
+            child: CupertinoSlidingSegmentedControl<String>(
+              groupValue: localeCode ?? 'system',
+              children: {
+                'system': Text(l10n.languageSystem),
+                'de': Text(l10n.languageDe),
+                'en': Text(l10n.languageEn),
+              },
+              onValueChanged: (v) {
+                if (v == null) return;
+                onLocale(v == 'system' ? null : v);
+              },
+            ),
           ),
           const SizedBox(height: 20),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(l10n.themeMode, style: theme.textTheme.titleSmall),
-          ),
+          Text(l10n.themeMode, style: theme.textTheme.titleSmall),
           const SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            children: [
-              ChoiceChip(
-                selected: themeMode == 'system',
-                label: Text(l10n.themeSystem),
-                onSelected: (_) => onTheme('system'),
-              ),
-              ChoiceChip(
-                selected: themeMode == 'light',
-                label: Text(l10n.themeLight),
-                onSelected: (_) => onTheme('light'),
-              ),
-              ChoiceChip(
-                selected: themeMode == 'dark',
-                label: Text(l10n.themeDark),
-                onSelected: (_) => onTheme('dark'),
-              ),
-            ],
+          SizedBox(
+            height: 32,
+            child: CupertinoSlidingSegmentedControl<String>(
+              groupValue: themeMode,
+              children: {
+                'system': Text(l10n.themeSystem),
+                'light': Text(l10n.themeLight),
+                'dark': Text(l10n.themeDark),
+              },
+              onValueChanged: (v) {
+                if (v != null) onTheme(v);
+              },
+            ),
           ),
         ],
       ),
