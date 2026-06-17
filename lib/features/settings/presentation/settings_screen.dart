@@ -7,6 +7,7 @@ import '../../../core/database/database_providers.dart';
 import '../../../core/domain/tag_kind.dart';
 import '../../../core/i18n/app_localizations.dart';
 import '../../../core/notifications/notification_providers.dart';
+import '../../../widgets/cupertino_time_sheet.dart';
 import '../../export/presentation/export_screen.dart';
 import '../application/settings_actions.dart';
 import 'tag_management_screen.dart';
@@ -223,13 +224,9 @@ class _WindowTile extends StatelessWidget {
   }
 
   Future<void> _pickStart(BuildContext context) async {
-    final picked = await showTimePicker(
-      context: context,
+    final picked = await showCupertinoTimeSheet(
+      context,
       initialTime: _asTime(startMinutes),
-      builder: (ctx, child) => MediaQuery(
-        data: MediaQuery.of(ctx).copyWith(alwaysUse24HourFormat: true),
-        child: child!,
-      ),
     );
     if (picked == null) return;
     final start = _asMinutes(picked);
@@ -237,13 +234,9 @@ class _WindowTile extends StatelessWidget {
   }
 
   Future<void> _pickEnd(BuildContext context) async {
-    final picked = await showTimePicker(
-      context: context,
+    final picked = await showCupertinoTimeSheet(
+      context,
       initialTime: _asTime(endMinutes),
-      builder: (ctx, child) => MediaQuery(
-        data: MediaQuery.of(ctx).copyWith(alwaysUse24HourFormat: true),
-        child: child!,
-      ),
     );
     if (picked == null) return;
     final end = _asMinutes(picked);
