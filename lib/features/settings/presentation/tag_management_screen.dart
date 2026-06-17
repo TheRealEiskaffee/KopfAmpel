@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../app/theme/tag_palette.dart';
 import '../../../core/database/database_providers.dart';
 import '../../../core/domain/tag.dart';
 import '../../../core/domain/tag_kind.dart';
@@ -46,26 +47,15 @@ class TagManagementScreen extends ConsumerWidget {
               ),
             );
           }
-          final custom = tags.where((t) => t.isCustom).toList();
-          final builtIn = tags.where((t) => !t.isCustom).toList();
-
-          final children = <Widget>[];
-          if (custom.isNotEmpty) {
-            children
-              ..add(_SectionHeader(l10n.tagGroupCustom))
-              ..addAll(_intersperse(
-                custom.map((t) => _TagTile(tag: t, kind: kind)),
-              ));
-          }
-          if (builtIn.isNotEmpty) {
-            children
-              ..add(_SectionHeader(l10n.tagGroupBuiltIn))
-              ..addAll(_intersperse(
-                builtIn.map((t) => _TagTile(tag: t, kind: kind)),
-              ));
-          }
-          children.add(const SizedBox(height: 24));
-          return ListView(children: children);
+          final sorted = [...tags]..sort(
+              (a, b) =>
+                  a.name.toLowerCase().compareTo(b.name.toLowerCase()),
+            );
+          return ListView.separated(
+            itemCount: sorted.length,
+            separatorBuilder: (_, _) => const Divider(height: 1, indent: 16),
+            itemBuilder: (ctx, i) => _TagTile(tag: sorted[i], kind: kind),
+          );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text(l10n.loadFailed(e.toString()))),
@@ -113,39 +103,6 @@ class TagManagementScreen extends ConsumerWidget {
   }
 }
 
-/// Inserts a thin divider between each [tiles] item without trailing one
-/// after the last row. Matches iOS' grouped-list look between section header
-/// and the rows below.
-Iterable<Widget> _intersperse(Iterable<Widget> tiles) sync* {
-  var first = true;
-  for (final t in tiles) {
-    if (!first) yield const Divider(height: 1, indent: 16);
-    first = false;
-    yield t;
-  }
-}
-
-class _SectionHeader extends StatelessWidget {
-  const _SectionHeader(this.title);
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
-      child: Text(
-        title.toUpperCase(),
-        style: theme.textTheme.labelSmall?.copyWith(
-          color: theme.colorScheme.onSurfaceVariant,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.8,
-        ),
-      ),
-    );
-  }
-}
-
 class _TagTile extends ConsumerWidget {
   const _TagTile({required this.tag, required this.kind});
 
@@ -157,6 +114,14 @@ class _TagTile extends ConsumerWidget {
     final scheme = Theme.of(context).colorScheme;
 
     return ListTile(
+      leading: Container(
+        width: 14,
+        height: 14,
+        decoration: BoxDecoration(
+          color: tag.displayColor,
+          shape: BoxShape.circle,
+        ),
+      ),
       title: Text(tag.name),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
@@ -166,7 +131,7 @@ class _TagTile extends ConsumerWidget {
             minimumSize: const Size.square(36),
             onPressed: () => _rename(context, ref),
             child: Icon(
-              Icons.edit_rounded,
+              Icons.edit_outlined,
               size: 22,
               color: scheme.primary,
             ),
@@ -177,7 +142,7 @@ class _TagTile extends ConsumerWidget {
             minimumSize: const Size.square(36),
             onPressed: () => _delete(context, ref),
             child: Icon(
-              Icons.delete_rounded,
+              Icons.delete_outline_rounded,
               size: 22,
               color: scheme.error,
             ),

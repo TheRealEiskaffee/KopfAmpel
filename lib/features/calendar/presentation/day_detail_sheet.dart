@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../app/theme/ampel_colors.dart';
+import '../../../app/theme/tag_palette.dart';
 import '../../../core/database/database_providers.dart';
 import '../../../core/domain/entry.dart';
 import '../../../core/domain/severity.dart';
@@ -285,6 +286,14 @@ class _TagChipGrid extends StatelessWidget {
           for (final t in tags)
             FilterChip(
               selected: selectedIds.contains(t.id),
+              avatar: Container(
+                width: 10,
+                height: 10,
+                decoration: BoxDecoration(
+                  color: t.displayColor,
+                  shape: BoxShape.circle,
+                ),
+              ),
               label: Text(t.name),
               onSelected: (_) => onToggle(t.id),
             ),
@@ -330,6 +339,14 @@ class _MedicationSection extends StatelessWidget {
                 for (final t in meds)
                   FilterChip(
                     selected: selectedIds.contains(t.id),
+                    avatar: Container(
+                      width: 10,
+                      height: 10,
+                      decoration: BoxDecoration(
+                        color: t.displayColor,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
                     label: Text(t.name),
                     onSelected: (_) => onToggle(t.id),
                   ),
