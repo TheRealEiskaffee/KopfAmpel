@@ -146,12 +146,6 @@ abstract class AppLocalizations {
   /// **'Statistiken erscheinen, sobald Einträge vorhanden sind.'**
   String get statsPlaceholder;
 
-  /// No description provided for @settingsPlaceholder.
-  ///
-  /// In de, this message translates to:
-  /// **'Hier kannst du später Erinnerungen, Trigger und Export einstellen.'**
-  String get settingsPlaceholder;
-
   /// No description provided for @severityNone.
   ///
   /// In de, this message translates to:
@@ -319,6 +313,216 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Erinnerung, deine Kopfschmerzen einzutragen.'**
   String get notificationChannelDescription;
+
+  /// No description provided for @reminderSection.
+  ///
+  /// In de, this message translates to:
+  /// **'Erinnerung'**
+  String get reminderSection;
+
+  /// No description provided for @notificationsEnabled.
+  ///
+  /// In de, this message translates to:
+  /// **'Benachrichtigungen aktiv'**
+  String get notificationsEnabled;
+
+  /// No description provided for @notificationsEnabledDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Wenn aus, bekommst du keine Erinnerungen.'**
+  String get notificationsEnabledDescription;
+
+  /// No description provided for @reminderWindow.
+  ///
+  /// In de, this message translates to:
+  /// **'Erinnerungs-Zeitfenster'**
+  String get reminderWindow;
+
+  /// No description provided for @reminderWindowDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Die tägliche Frage kommt zufällig in diesem Zeitraum.'**
+  String get reminderWindowDescription;
+
+  /// No description provided for @reminderWindowFrom.
+  ///
+  /// In de, this message translates to:
+  /// **'Von'**
+  String get reminderWindowFrom;
+
+  /// No description provided for @reminderWindowTo.
+  ///
+  /// In de, this message translates to:
+  /// **'Bis'**
+  String get reminderWindowTo;
+
+  /// No description provided for @reminderRepeats.
+  ///
+  /// In de, this message translates to:
+  /// **'Wiederholen, wenn ignoriert'**
+  String get reminderRepeats;
+
+  /// No description provided for @reminderRepeatsDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Die App fragt erneut, wenn du nicht reagierst.'**
+  String get reminderRepeatsDescription;
+
+  /// No description provided for @reminderRepeatDelay.
+  ///
+  /// In de, this message translates to:
+  /// **'Abstand der Wiederholungen'**
+  String get reminderRepeatDelay;
+
+  /// No description provided for @reminderRepeatDelayDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Die App wartet zufällig in diesem Bereich, bevor sie erneut fragt.'**
+  String get reminderRepeatDelayDescription;
+
+  /// No description provided for @reminderMaxRepeats.
+  ///
+  /// In de, this message translates to:
+  /// **'Max. Wiederholungen pro Tag'**
+  String get reminderMaxRepeats;
+
+  /// No description provided for @minutesSuffix.
+  ///
+  /// In de, this message translates to:
+  /// **'Min.'**
+  String get minutesSuffix;
+
+  /// No description provided for @dataSection.
+  ///
+  /// In de, this message translates to:
+  /// **'Daten'**
+  String get dataSection;
+
+  /// No description provided for @manageTriggers.
+  ///
+  /// In de, this message translates to:
+  /// **'Trigger verwalten'**
+  String get manageTriggers;
+
+  /// No description provided for @manageMedications.
+  ///
+  /// In de, this message translates to:
+  /// **'Medikamente verwalten'**
+  String get manageMedications;
+
+  /// No description provided for @exportData.
+  ///
+  /// In de, this message translates to:
+  /// **'Daten exportieren'**
+  String get exportData;
+
+  /// No description provided for @exportDataDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Als JSON, CSV oder PDF teilen.'**
+  String get exportDataDescription;
+
+  /// No description provided for @appearanceSection.
+  ///
+  /// In de, this message translates to:
+  /// **'Darstellung'**
+  String get appearanceSection;
+
+  /// No description provided for @language.
+  ///
+  /// In de, this message translates to:
+  /// **'Sprache'**
+  String get language;
+
+  /// No description provided for @languageSystem.
+  ///
+  /// In de, this message translates to:
+  /// **'System'**
+  String get languageSystem;
+
+  /// No description provided for @languageDe.
+  ///
+  /// In de, this message translates to:
+  /// **'Deutsch'**
+  String get languageDe;
+
+  /// No description provided for @languageEn.
+  ///
+  /// In de, this message translates to:
+  /// **'Englisch'**
+  String get languageEn;
+
+  /// No description provided for @themeMode.
+  ///
+  /// In de, this message translates to:
+  /// **'Theme'**
+  String get themeMode;
+
+  /// No description provided for @themeLight.
+  ///
+  /// In de, this message translates to:
+  /// **'Hell'**
+  String get themeLight;
+
+  /// No description provided for @themeDark.
+  ///
+  /// In de, this message translates to:
+  /// **'Dunkel'**
+  String get themeDark;
+
+  /// No description provided for @themeSystem.
+  ///
+  /// In de, this message translates to:
+  /// **'System'**
+  String get themeSystem;
+
+  /// No description provided for @privacySection.
+  ///
+  /// In de, this message translates to:
+  /// **'Datenschutz'**
+  String get privacySection;
+
+  /// No description provided for @privacyInfo.
+  ///
+  /// In de, this message translates to:
+  /// **'Alle Daten bleiben ausschließlich auf deinem Gerät. KopfAmpel sendet nichts an Server.'**
+  String get privacyInfo;
+
+  /// No description provided for @manageTriggersTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Trigger verwalten'**
+  String get manageTriggersTitle;
+
+  /// No description provided for @manageMedicationsTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Medikamente verwalten'**
+  String get manageMedicationsTitle;
+
+  /// No description provided for @renameTagTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Umbenennen'**
+  String get renameTagTitle;
+
+  /// No description provided for @deleteTagTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Löschen?'**
+  String get deleteTagTitle;
+
+  /// No description provided for @deleteTagBody.
+  ///
+  /// In de, this message translates to:
+  /// **'Wenn du das Tag löschst, verschwindet es auch aus Einträgen, die es nutzen.'**
+  String get deleteTagBody;
+
+  /// No description provided for @emptyTagList.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch nichts angelegt. Tippe rechts unten auf +.'**
+  String get emptyTagList;
 }
 
 class _AppLocalizationsDelegate

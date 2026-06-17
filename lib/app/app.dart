@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../core/database/database_providers.dart';
 import '../core/i18n/app_localizations.dart';
 import 'router.dart';
 import 'theme/app_theme.dart';
@@ -12,12 +13,28 @@ class KopfAmpelApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final settingsAsync = ref.watch(settingsProvider);
+
+    final locale = settingsAsync.maybeWhen(
+      data: (s) => s.locale == null ? null : Locale(s.locale!),
+      orElse: () => null,
+    );
+    final themeMode = settingsAsync.maybeWhen(
+      data: (s) => switch (s.themeMode) {
+        'light' => ThemeMode.light,
+        'dark' => ThemeMode.dark,
+        _ => ThemeMode.system,
+      },
+      orElse: () => ThemeMode.system,
+    );
+
     return MaterialApp.router(
       onGenerateTitle: (ctx) => AppLocalizations.of(ctx).appTitle,
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
-      themeMode: ThemeMode.system,
+      themeMode: themeMode,
+      locale: locale,
       routerConfig: _router,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,

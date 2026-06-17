@@ -33,10 +33,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statsPlaceholder => 'Stats will appear once you have entries.';
 
   @override
-  String get settingsPlaceholder =>
-      'You will configure reminders, triggers and export here.';
-
-  @override
   String get severityNone => 'No headache';
 
   @override
@@ -122,4 +118,115 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get notificationChannelDescription =>
       'Reminder to log your headaches.';
+
+  @override
+  String get reminderSection => 'Reminder';
+
+  @override
+  String get notificationsEnabled => 'Notifications on';
+
+  @override
+  String get notificationsEnabledDescription =>
+      'When off, you will not get reminders.';
+
+  @override
+  String get reminderWindow => 'Reminder window';
+
+  @override
+  String get reminderWindowDescription =>
+      'The daily question fires at a random time inside this window.';
+
+  @override
+  String get reminderWindowFrom => 'From';
+
+  @override
+  String get reminderWindowTo => 'To';
+
+  @override
+  String get reminderRepeats => 'Repeat when ignored';
+
+  @override
+  String get reminderRepeatsDescription =>
+      'The app asks again if you don\'t respond.';
+
+  @override
+  String get reminderRepeatDelay => 'Delay between repeats';
+
+  @override
+  String get reminderRepeatDelayDescription =>
+      'The app waits a random amount inside this range before asking again.';
+
+  @override
+  String get reminderMaxRepeats => 'Max repeats per day';
+
+  @override
+  String get minutesSuffix => 'min';
+
+  @override
+  String get dataSection => 'Data';
+
+  @override
+  String get manageTriggers => 'Manage triggers';
+
+  @override
+  String get manageMedications => 'Manage medications';
+
+  @override
+  String get exportData => 'Export data';
+
+  @override
+  String get exportDataDescription => 'Share as JSON, CSV or PDF.';
+
+  @override
+  String get appearanceSection => 'Appearance';
+
+  @override
+  String get language => 'Language';
+
+  @override
+  String get languageSystem => 'System';
+
+  @override
+  String get languageDe => 'German';
+
+  @override
+  String get languageEn => 'English';
+
+  @override
+  String get themeMode => 'Theme';
+
+  @override
+  String get themeLight => 'Light';
+
+  @override
+  String get themeDark => 'Dark';
+
+  @override
+  String get themeSystem => 'System';
+
+  @override
+  String get privacySection => 'Privacy';
+
+  @override
+  String get privacyInfo =>
+      'All data stays on your device. KopfAmpel never sends anything to a server.';
+
+  @override
+  String get manageTriggersTitle => 'Manage triggers';
+
+  @override
+  String get manageMedicationsTitle => 'Manage medications';
+
+  @override
+  String get renameTagTitle => 'Rename';
+
+  @override
+  String get deleteTagTitle => 'Delete?';
+
+  @override
+  String get deleteTagBody =>
+      'Deleting this tag also removes it from any entries that use it.';
+
+  @override
+  String get emptyTagList => 'Nothing here yet. Tap + to add one.';
 }
