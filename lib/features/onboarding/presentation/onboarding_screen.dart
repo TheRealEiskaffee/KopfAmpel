@@ -8,14 +8,13 @@ import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../../app/theme/ampel_colors.dart';
-import '../../../core/domain/tag_kind.dart';
 import '../../../core/i18n/app_localizations.dart';
 import '../../../core/notifications/notification_providers.dart';
 import '../../../widgets/cupertino_time_sheet.dart';
 import '../../export/application/export_providers.dart';
 import '../../export/application/export_service.dart';
 import '../../settings/application/settings_actions.dart';
-import '../../settings/presentation/tag_management_screen.dart';
+import '../../settings/presentation/category_management_screen.dart';
 
 /// First-launch setup wizard. Pages:
 ///   0 welcome
@@ -800,21 +799,11 @@ class _TagsPage extends ConsumerWidget {
           OutlinedButton.icon(
             onPressed: () => Navigator.of(context).push(
               CupertinoPageRoute<void>(
-                builder: (_) => const TagManagementScreen(kind: TagKind.trigger),
+                builder: (_) => const CategoryManagementScreen(),
               ),
             ),
             icon: const Icon(CupertinoIcons.tag, size: 18),
-            label: Text(l10n.onboardingTagsManageTriggers),
-          ),
-          const SizedBox(height: 10),
-          OutlinedButton.icon(
-            onPressed: () => Navigator.of(context).push(
-              CupertinoPageRoute<void>(
-                builder: (_) => const TagManagementScreen(kind: TagKind.medication),
-              ),
-            ),
-            icon: const Icon(CupertinoIcons.bandage, size: 18),
-            label: Text(l10n.onboardingTagsManageMedications),
+            label: Text(l10n.onboardingTagsManage),
           ),
         ],
       ),

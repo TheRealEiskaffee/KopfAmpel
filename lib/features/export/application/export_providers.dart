@@ -27,8 +27,6 @@ PdfStrings pdfStringsOf(BuildContext context) {
     statsYellow: l10n.pdfStatsYellow,
     statsRed: l10n.pdfStatsRed,
     entriesHeading: l10n.pdfEntriesHeading,
-    triggersLabel: l10n.triggersLabel,
-    medicationsLabel: l10n.medicationsLabel,
     footer: l10n.pdfFooter,
     monthNames: months,
   );

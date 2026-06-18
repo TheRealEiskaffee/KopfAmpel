@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/database/database_providers.dart';
+import '../../../core/domain/category.dart';
 import '../../../core/domain/severity.dart';
-import '../../../core/domain/tag_kind.dart';
 
 enum StatsRange { sevenDays, thirtyDays, ninetyDays, allTime }
 
@@ -15,10 +15,25 @@ extension StatsRangeX on StatsRange {
       };
 }
 
-class TagCount {
-  const TagCount(this.name, this.count);
-  final String name;
-  final int count;
+/// One tag's association with headache days: how often it was logged on a day
+/// that had a headache, and on what share of all headache days it appeared.
+/// Carries its [category] so the stats screen can label and colour it.
+class TagAssociation {
+  const TagAssociation({
+    required this.category,
+    required this.tagName,
+    required this.headacheCount,
+    required this.share,
+  });
+
+  final Category category;
+  final String tagName;
+
+  /// Number of headache days on which this tag was present.
+  final int headacheCount;
+
+  /// [headacheCount] / total headache days, in 0–1.
+  final double share;
 }
 
 class WeekdayStat {
@@ -49,8 +64,7 @@ class HeadacheStats {
     required this.totalEntries,
     required this.rangeDays,
     required this.countBySeverity,
-    required this.topTriggers,
-    required this.topMedications,
+    required this.headacheAssociations,
     required this.weekdayStats,
     required this.forecast,
     required this.weeklyAverageHeadacheDays,
@@ -61,8 +75,12 @@ class HeadacheStats {
   final int totalEntries;
   final int rangeDays;
   final Map<Severity, int> countBySeverity;
-  final List<TagCount> topTriggers;
-  final List<TagCount> topMedications;
+
+  /// Tags ranked by how often they coincide with headache days, each labelled
+  /// with its category. This is the "what is associated with my headaches"
+  /// view.
+  final List<TagAssociation> headacheAssociations;
+
   final List<WeekdayStat> weekdayStats;
   final List<ForecastDay> forecast;
   final double weeklyAverageHeadacheDays;
@@ -76,6 +94,10 @@ class HeadacheStats {
 
   int get headacheRatePercent =>
       totalEntries == 0 ? 0 : ((headacheDays / totalEntries) * 100).round();
+
+  /// The single strongest association — used for the headline insight line.
+  TagAssociation? get topAssociation =>
+      headacheAssociations.isEmpty ? null : headacheAssociations.first;
 
   /// Forecast requires at least this many entries before we show it; otherwise
   /// predictions are noise.
@@ -94,11 +116,13 @@ final statsProvider = StreamProvider<HeadacheStats>((ref) {
   final db = ref.watch(appDatabaseProvider);
 
   return db.entriesDao.watchAll().asyncMap((allEntries) async {
+    final allCategories = await db.select(db.categories).get();
     final allTags = await db.select(db.tags).get();
     final allEntryTags = await db.select(db.entryTags).get();
     return _computeStats(
       range: range,
       allEntries: allEntries,
+      allCategories: allCategories,
       allTags: allTags,
       allEntryTags: allEntryTags,
     );
@@ -108,18 +132,18 @@ final statsProvider = StreamProvider<HeadacheStats>((ref) {
 HeadacheStats _computeStats({
   required StatsRange range,
   required List<dynamic> allEntries,
+  required List<dynamic> allCategories,
   required List<dynamic> allTags,
   required List<dynamic> allEntryTags,
 }) {
   final tagById = {for (final t in allTags) t.id as int: t};
+  final categoryById = {for (final c in allCategories) c.id as int: c};
 
   final today = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
   final cutoff = range.days == null ? null : today.subtract(Duration(days: range.days! - 1));
   final entries = cutoff == null
       ? allEntries
       : allEntries.where((e) => !e.date.isBefore(cutoff)).toList();
-
-  final entryIds = entries.map((e) => e.id).toSet();
 
   // Severity distribution.
   final counts = <Severity, int>{
@@ -130,27 +154,53 @@ HeadacheStats _computeStats({
     counts[s] = (counts[s] ?? 0) + 1;
   }
 
-  // Tag counts.
-  final triggerCounts = <int, int>{};
-  final medicationCounts = <int, int>{};
+  // Headache-day association: count tags only on days that had a headache.
+  final headacheEntryIds = entries
+      .where((e) => Severity.fromString(e.severity).hasHeadache)
+      .map((e) => e.id)
+      .toSet();
+  final totalHeadacheDays = headacheEntryIds.length;
+
+  final tagHeadacheCount = <int, int>{};
   for (final et in allEntryTags) {
-    if (!entryIds.contains(et.entryId)) continue;
+    if (!headacheEntryIds.contains(et.entryId)) continue;
     final tag = tagById[et.tagId];
     if (tag == null) continue;
-    if (tag.kind == TagKind.trigger.value) {
-      triggerCounts[tag.id] = (triggerCounts[tag.id] ?? 0) + 1;
-    } else if (tag.kind == TagKind.medication.value) {
-      medicationCounts[tag.id] = (medicationCounts[tag.id] ?? 0) + 1;
-    }
+    tagHeadacheCount[tag.id as int] = (tagHeadacheCount[tag.id as int] ?? 0) + 1;
   }
 
-  List<TagCount> topN(Map<int, int> source, int n) {
-    final list = source.entries
-        .map((e) => TagCount(tagById[e.key]!.name, e.value))
-        .toList()
-      ..sort((a, b) => b.count.compareTo(a.count));
-    return list.take(n).toList();
+  Category categoryFor(int id) {
+    final row = categoryById[id];
+    if (row == null) {
+      return Category(id: id, name: '', sortOrder: 0);
+    }
+    return Category(
+      id: row.id as int,
+      name: row.name as String,
+      icon: row.icon as String?,
+      color: row.color as String?,
+      sortOrder: row.sortOrder as int,
+      isCustom: row.isCustom as bool,
+    );
   }
+
+  final headacheAssociations = tagHeadacheCount.entries
+      .map((e) {
+        final tag = tagById[e.key]!;
+        return TagAssociation(
+          category: categoryFor(tag.categoryId as int),
+          tagName: tag.name as String,
+          headacheCount: e.value,
+          share: totalHeadacheDays == 0 ? 0 : e.value / totalHeadacheDays,
+        );
+      })
+      .toList()
+    ..sort((a, b) {
+      final byCount = b.headacheCount.compareTo(a.headacheCount);
+      if (byCount != 0) return byCount;
+      return a.tagName.toLowerCase().compareTo(b.tagName.toLowerCase());
+    });
+  final topAssociations = headacheAssociations.take(8).toList();
 
   // Weekday distribution (1 = Monday … 7 = Sunday).
   final byWeekday = <int, (int total, int headache)>{
@@ -215,8 +265,7 @@ HeadacheStats _computeStats({
     totalEntries: entries.length,
     rangeDays: rangeDays,
     countBySeverity: counts,
-    topTriggers: topN(triggerCounts, 5),
-    topMedications: topN(medicationCounts, 5),
+    headacheAssociations: topAssociations,
     weekdayStats: weekdayStats,
     forecast: forecast,
     weeklyAverageHeadacheDays: weeklyAverage,

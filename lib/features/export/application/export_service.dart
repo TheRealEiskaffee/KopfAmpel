@@ -10,7 +10,6 @@ import 'package:pdf/widgets.dart' as pw;
 import '../../../core/database/app_database.dart';
 import '../../../core/database/converters.dart';
 import '../../../core/domain/severity.dart';
-import '../../../core/domain/tag_kind.dart';
 
 enum ImportMode { merge, replace }
 
@@ -24,7 +23,7 @@ class ExportService {
   ExportService(this._db);
   final AppDatabase _db;
 
-  static const int kSchemaVersion = 1;
+  static const int kSchemaVersion = 2;
 
   Future<File> exportJson() async {
     final payload = await _gather();
@@ -34,35 +33,24 @@ class ExportService {
 
   Future<File> exportCsv() async {
     final entries = await _db.select(_db.entries).get();
+    final categories = await _sortedCategories();
     final tags = await _db.select(_db.tags).get();
     final entryTagsRows = await _db.select(_db.entryTags).get();
     final tagById = {for (final t in tags) t.id: t};
 
     final rows = <List<dynamic>>[
-      ['date', 'severity', 'note', 'triggers', 'medications', 'createdAt', 'updatedAt'],
+      ['date', 'severity', 'note', 'tags', 'createdAt', 'updatedAt'],
     ];
     for (final e in entries) {
-      final triggers = entryTagsRows
+      final tagIds = entryTagsRows
           .where((et) => et.entryId == e.id)
-          .map((et) => tagById[et.tagId])
-          .where((t) => t != null && t.kind == TagKind.trigger.value)
-          .map((t) => t!.name)
-          .join(', ');
-      final meds = entryTagsRows
-          .where((et) => et.entryId == e.id)
-          .map((et) {
-            final t = tagById[et.tagId];
-            if (t == null || t.kind != TagKind.medication.value) return null;
-            return et.dose == null || et.dose!.isEmpty ? t.name : '${t.name}:${et.dose}';
-          })
-          .where((s) => s != null)
-          .join('; ');
+          .map((et) => et.tagId)
+          .toSet();
       rows.add([
         _dateOnly(e.date),
         e.severity,
         e.note ?? '',
-        triggers,
-        meds,
+        _groupTagsByCategory(categories, tagById, tagIds, separator: '; '),
         e.createdAt.toIso8601String(),
         e.updatedAt.toIso8601String(),
       ]);
@@ -84,6 +72,7 @@ class ExportService {
           }).toList()
       ..sort((a, b) => a.date.compareTo(b.date));
 
+    final categories = await _sortedCategories();
     final tags = await _db.select(_db.tags).get();
     final entryTagsRows = await _db.select(_db.entryTags).get();
     final tagById = {for (final t in tags) t.id: t};
@@ -137,7 +126,7 @@ class ExportService {
           if (selected.isEmpty)
             pw.Text(strings.allTimeHeading, style: pw.TextStyle(color: PdfColors.grey700)),
           for (final e in selected)
-            _pdfEntryBlock(e, entryTagsRows, tagById, strings),
+            _pdfEntryBlock(e, entryTagsRows, tagById, categories),
         ],
         footer: (ctx) => pw.Container(
           alignment: pw.Alignment.centerRight,
@@ -160,8 +149,12 @@ class ExportService {
   Future<ImportResult> importJson(File file, ImportMode mode) async {
     final raw = await file.readAsString();
     final decoded = jsonDecode(raw) as Map<String, dynamic>;
-    final entriesIn = (decoded['entries'] as List? ?? const []).cast<Map<String, dynamic>>();
+    final hasCategories = decoded['categories'] is List;
+
+    final categoriesIn =
+        (decoded['categories'] as List? ?? const []).cast<Map<String, dynamic>>();
     final tagsIn = (decoded['tags'] as List? ?? const []).cast<Map<String, dynamic>>();
+    final entriesIn = (decoded['entries'] as List? ?? const []).cast<Map<String, dynamic>>();
 
     return _db.transaction(() async {
       if (mode == ImportMode.replace) {
@@ -169,28 +162,119 @@ class ExportService {
         await _db.delete(_db.entries).go();
       }
 
-      var tagsAdded = 0;
-      final tagIdByKey = <String, int>{};
-      final existingTags = await _db.select(_db.tags).get();
-      for (final t in existingTags) {
-        tagIdByKey['${t.kind}|${t.name}'] = t.id;
+      // --- Categories ----------------------------------------------------
+      final catIdByName = <String, int>{};
+      for (final c in await _db.select(_db.categories).get()) {
+        catIdByName[c.name] = c.id;
       }
-      for (final t in tagsIn) {
-        final name = (t['name'] as String?)?.trim();
-        final kind = (t['kind'] as String?)?.trim();
-        if (name == null || name.isEmpty || kind == null) continue;
-        final key = '$kind|$name';
-        if (tagIdByKey.containsKey(key)) continue;
+
+      Future<int> ensureCategory(
+        String name, {
+        String? icon,
+        String? color,
+        int sortOrder = 0,
+        bool isCustom = true,
+      }) async {
+        final existing = catIdByName[name];
+        if (existing != null) return existing;
+        final id = await _db.categoriesDao.create(
+          name: name,
+          icon: icon,
+          color: color,
+          sortOrder: sortOrder,
+          isCustom: isCustom,
+        );
+        catIdByName[name] = id;
+        return id;
+      }
+
+      // --- Tags ----------------------------------------------------------
+      var tagsAdded = 0;
+      final tagIdByKey = <String, int>{}; // '$categoryId|$name'
+      for (final t in await _db.select(_db.tags).get()) {
+        tagIdByKey['${t.categoryId}|${t.name}'] = t.id;
+      }
+
+      Future<int> ensureTag(
+        int categoryId,
+        String name, {
+        bool isCustom = true,
+        String? color,
+      }) async {
+        final key = '$categoryId|$name';
+        final existing = tagIdByKey[key];
+        if (existing != null) return existing;
         final id = await _db.tagsDao.create(
           name: name,
-          kind: kind,
-          isCustom: (t['isCustom'] as bool?) ?? true,
-          color: t['color'] as String?,
+          categoryId: categoryId,
+          isCustom: isCustom,
+          color: color,
         );
         tagIdByKey[key] = id;
         tagsAdded++;
+        return id;
       }
 
+      // Maps a tag reference (category name + tag name) to its id, or null.
+      Future<int?> resolveTag(String? categoryName, String? name) async {
+        if (categoryName == null || name == null || name.isEmpty) return null;
+        final catId = catIdByName[categoryName];
+        if (catId == null) return null;
+        return ensureTag(catId, name);
+      }
+
+      // Legacy v1 export maps the hard-coded kinds onto two categories.
+      var legacyTriggerCat = 0;
+      var legacyMedCat = 0;
+      if (!hasCategories) {
+        legacyTriggerCat =
+            await ensureCategory('Trigger', icon: 'bolt', sortOrder: 0, isCustom: false);
+        legacyMedCat =
+            await ensureCategory('Medikamente', icon: 'bandage', sortOrder: 1, isCustom: false);
+      }
+
+      if (hasCategories) {
+        for (final c in categoriesIn) {
+          final name = (c['name'] as String?)?.trim();
+          if (name == null || name.isEmpty) continue;
+          await ensureCategory(
+            name,
+            icon: c['icon'] as String?,
+            color: c['color'] as String?,
+            sortOrder: (c['sortOrder'] as int?) ?? 0,
+            isCustom: (c['isCustom'] as bool?) ?? true,
+          );
+        }
+        for (final t in tagsIn) {
+          final name = (t['name'] as String?)?.trim();
+          final categoryName = (t['category'] as String?)?.trim();
+          if (name == null || name.isEmpty || categoryName == null) continue;
+          final catId = catIdByName[categoryName];
+          if (catId == null) continue;
+          await ensureTag(
+            catId,
+            name,
+            isCustom: (t['isCustom'] as bool?) ?? true,
+            color: t['color'] as String?,
+          );
+        }
+      } else {
+        // Legacy tags carry a `kind` ('trigger' | 'medication').
+        for (final t in tagsIn) {
+          final name = (t['name'] as String?)?.trim();
+          final kind = (t['kind'] as String?)?.trim();
+          if (name == null || name.isEmpty) continue;
+          final catId = kind == 'medication' ? legacyMedCat : legacyTriggerCat;
+          await ensureTag(
+            catId,
+            name,
+            isCustom: (t['isCustom'] as bool?) ?? true,
+            color: t['color'] as String?,
+          );
+        }
+      }
+
+      // --- Entries -------------------------------------------------------
       var entriesAdded = 0;
       for (final e in entriesIn) {
         final dateStr = e['date'] as String?;
@@ -202,28 +286,32 @@ class ExportService {
           if (existing != null) continue;
         }
 
-        final triggerNames = ((e['triggers'] as List?) ?? const []).cast<String>();
-        final medications =
-            ((e['medications'] as List?) ?? const []).cast<Map<String, dynamic>>();
-        final triggerIds = <int>[];
-        final medMap = <int, String?>{};
-        for (final name in triggerNames) {
-          final id = tagIdByKey['${TagKind.trigger.value}|$name'];
-          if (id != null) triggerIds.add(id);
-        }
-        for (final m in medications) {
-          final name = m['name'] as String?;
-          if (name == null) continue;
-          final id = tagIdByKey['${TagKind.medication.value}|$name'];
-          if (id != null) medMap[id] = m['dose'] as String?;
+        final tagIds = <int>[];
+        if (hasCategories) {
+          final refs = ((e['tags'] as List?) ?? const []).cast<Map<String, dynamic>>();
+          for (final ref in refs) {
+            final id = await resolveTag(ref['category'] as String?, ref['name'] as String?);
+            if (id != null) tagIds.add(id);
+          }
+        } else {
+          final triggerNames = ((e['triggers'] as List?) ?? const []).cast<String>();
+          for (final name in triggerNames) {
+            tagIds.add(await ensureTag(legacyTriggerCat, name));
+          }
+          final medications =
+              ((e['medications'] as List?) ?? const []).cast<Map<String, dynamic>>();
+          for (final m in medications) {
+            final name = (m['name'] as String?)?.trim();
+            if (name == null || name.isEmpty) continue;
+            tagIds.add(await ensureTag(legacyMedCat, name));
+          }
         }
 
         await _db.entriesDao.upsert(
           date: date,
           severity: (e['severity'] as String?) ?? Severity.none.value,
           note: e['note'] as String?,
-          triggerTagIds: triggerIds,
-          medicationTagIdsToDose: medMap,
+          tagIds: tagIds,
         );
         entriesAdded++;
       }
@@ -232,18 +320,29 @@ class ExportService {
   }
 
   Future<Map<String, dynamic>> _gather() async {
+    final categories = await _sortedCategories();
     final entries = await _db.select(_db.entries).get();
     final tags = await _db.select(_db.tags).get();
     final entryTagsRows = await _db.select(_db.entryTags).get();
     final tagById = {for (final t in tags) t.id: t};
+    final categoryNameById = {for (final c in categories) c.id: c.name};
 
     return {
       'schemaVersion': kSchemaVersion,
       'exportedAt': DateTime.now().toIso8601String(),
+      'categories': categories
+          .map((c) => {
+                'name': c.name,
+                'icon': c.icon,
+                'color': c.color,
+                'sortOrder': c.sortOrder,
+                'isCustom': c.isCustom,
+              })
+          .toList(),
       'tags': tags
           .map((t) => {
                 'name': t.name,
-                'kind': t.kind,
+                'category': categoryNameById[t.categoryId],
                 'isCustom': t.isCustom,
                 'color': t.color,
               })
@@ -254,24 +353,49 @@ class ExportService {
           'date': _dateOnly(e.date),
           'severity': e.severity,
           'note': e.note,
-          'triggers': ets
+          'tags': ets
               .map((et) => tagById[et.tagId])
-              .where((t) => t != null && t.kind == TagKind.trigger.value)
-              .map((t) => t!.name)
-              .toList(),
-          'medications': ets
-              .map((et) {
-                final t = tagById[et.tagId];
-                if (t == null || t.kind != TagKind.medication.value) return null;
-                return {'name': t.name, 'dose': et.dose};
-              })
-              .where((m) => m != null)
+              .where((t) => t != null)
+              .map((t) => {
+                    'category': categoryNameById[t!.categoryId],
+                    'name': t.name,
+                  })
               .toList(),
           'createdAt': e.createdAt.toIso8601String(),
           'updatedAt': e.updatedAt.toIso8601String(),
         };
       }).toList(),
     };
+  }
+
+  Future<List<CategoryRow>> _sortedCategories() async {
+    final rows = await _db.select(_db.categories).get();
+    rows.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+    return rows;
+  }
+
+  /// Builds a human-readable "Category: a, b; Category2: c" string for one
+  /// entry's tag set, in category display order.
+  String _groupTagsByCategory(
+    List<CategoryRow> categories,
+    Map<int, TagRow> tagById,
+    Set<int> tagIds, {
+    required String separator,
+  }) {
+    final namesByCategory = <int, List<String>>{};
+    for (final id in tagIds) {
+      final t = tagById[id];
+      if (t == null) continue;
+      namesByCategory.putIfAbsent(t.categoryId, () => []).add(t.name);
+    }
+    final parts = <String>[];
+    for (final c in categories) {
+      final names = namesByCategory[c.id];
+      if (names == null || names.isEmpty) continue;
+      names.sort();
+      parts.add('${c.name}: ${names.join(', ')}');
+    }
+    return parts.join(separator);
   }
 
   Future<File> _writeFile(String name, String contents) async {
@@ -310,7 +434,7 @@ class ExportService {
     EntryRow e,
     List<EntryTagRow> entryTagsRows,
     Map<int, TagRow> tagById,
-    PdfStrings strings,
+    List<CategoryRow> categories,
   ) {
     final sev = Severity.fromString(e.severity);
     final color = switch (sev) {
@@ -319,21 +443,17 @@ class ExportService {
       Severity.red => PdfColors.red700,
       Severity.none => PdfColors.grey400,
     };
-    final triggers = entryTagsRows
+
+    final tagIds = entryTagsRows
         .where((et) => et.entryId == e.id)
-        .map((et) => tagById[et.tagId])
-        .where((t) => t != null && t.kind == TagKind.trigger.value)
-        .map((t) => t!.name)
-        .join(', ');
-    final meds = entryTagsRows
-        .where((et) => et.entryId == e.id)
-        .map((et) {
-          final t = tagById[et.tagId];
-          if (t == null || t.kind != TagKind.medication.value) return null;
-          return et.dose == null || et.dose!.isEmpty ? t.name : '${t.name} (${et.dose})';
-        })
-        .where((s) => s != null)
-        .join(', ');
+        .map((et) => et.tagId)
+        .toSet();
+    final namesByCategory = <int, List<String>>{};
+    for (final id in tagIds) {
+      final t = tagById[id];
+      if (t == null) continue;
+      namesByCategory.putIfAbsent(t.categoryId, () => []).add(t.name);
+    }
 
     return pw.Container(
       margin: const pw.EdgeInsets.only(bottom: 10),
@@ -369,22 +489,15 @@ class ExportService {
               padding: const pw.EdgeInsets.only(top: 4),
               child: pw.Text(e.note!),
             ),
-          if (triggers.isNotEmpty)
-            pw.Padding(
-              padding: const pw.EdgeInsets.only(top: 4),
-              child: pw.Text(
-                '${strings.triggersLabel}: $triggers',
-                style: pw.TextStyle(color: PdfColors.grey700, fontSize: 10),
+          for (final c in categories)
+            if (namesByCategory[c.id] != null && namesByCategory[c.id]!.isNotEmpty)
+              pw.Padding(
+                padding: const pw.EdgeInsets.only(top: 4),
+                child: pw.Text(
+                  '${c.name}: ${(namesByCategory[c.id]!..sort()).join(', ')}',
+                  style: pw.TextStyle(color: PdfColors.grey700, fontSize: 10),
+                ),
               ),
-            ),
-          if (meds.isNotEmpty)
-            pw.Padding(
-              padding: const pw.EdgeInsets.only(top: 2),
-              child: pw.Text(
-                '${strings.medicationsLabel}: $meds',
-                style: pw.TextStyle(color: PdfColors.grey700, fontSize: 10),
-              ),
-            ),
         ],
       ),
     );
@@ -403,8 +516,6 @@ class PdfStrings {
     required this.statsYellow,
     required this.statsRed,
     required this.entriesHeading,
-    required this.triggersLabel,
-    required this.medicationsLabel,
     required this.footer,
     required this.monthNames,
   });
@@ -418,8 +529,6 @@ class PdfStrings {
   final String statsYellow;
   final String statsRed;
   final String entriesHeading;
-  final String triggersLabel;
-  final String medicationsLabel;
   final String footer;
   final List<String> monthNames;
 }

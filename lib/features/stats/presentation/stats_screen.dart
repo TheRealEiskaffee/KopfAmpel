@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../app/theme/ampel_colors.dart';
+import '../../../app/theme/category_icons.dart';
+import '../../../app/theme/tag_palette.dart';
 import '../../../core/domain/severity.dart';
 import '../../../core/i18n/app_localizations.dart';
 import '../application/stats_providers.dart';
@@ -26,6 +28,7 @@ class StatsScreen extends ConsumerWidget {
           child: Padding(
             padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
             child: SizedBox(
+              width: double.infinity,
               height: 32,
               child: CupertinoSlidingSegmentedControl<StatsRange>(
                 groupValue: range,
@@ -93,23 +96,13 @@ class _StatsBody extends StatelessWidget {
         const SizedBox(height: 8),
         _MetricsRow(stats: stats),
         const SizedBox(height: 8),
+        _AssociationsCard(stats: stats),
+        const SizedBox(height: 8),
         _DistributionCard(stats: stats),
         const SizedBox(height: 8),
         _WeekdayCard(stats: stats),
         const SizedBox(height: 8),
         _ForecastCard(stats: stats),
-        const SizedBox(height: 8),
-        _TopTagsCard(
-          title: l10n.statsTopTriggers,
-          items: stats.topTriggers,
-          color: Theme.of(context).colorScheme.primary,
-        ),
-        const SizedBox(height: 8),
-        _TopTagsCard(
-          title: l10n.statsTopMedications,
-          items: stats.topMedications,
-          color: Theme.of(context).colorScheme.tertiary,
-        ),
       ],
     );
   }
@@ -506,60 +499,145 @@ class _ForecastCard extends StatelessWidget {
   }
 }
 
-class _TopTagsCard extends StatelessWidget {
-  const _TopTagsCard({
-    required this.title,
-    required this.items,
-    required this.color,
-  });
-
-  final String title;
-  final List<TagCount> items;
-  final Color color;
+/// "What is associated with my headaches" — tags ranked by how often they
+/// appeared on headache days, each labelled with its category.
+class _AssociationsCard extends StatelessWidget {
+  const _AssociationsCard({required this.stats});
+  final HeadacheStats stats;
 
   @override
   Widget build(BuildContext context) {
-    if (items.isEmpty) {
-      return const SizedBox.shrink();
-    }
     final l10n = AppLocalizations.of(context);
-    final maxCount = items.map((e) => e.count).reduce((a, b) => a > b ? a : b);
+    final theme = Theme.of(context);
+    final items = stats.headacheAssociations;
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: Theme.of(context).textTheme.titleMedium),
+            Text(l10n.statsAssociationsTitle, style: theme.textTheme.titleMedium),
+            const SizedBox(height: 4),
+            Text(l10n.statsAssociationsHint, style: theme.textTheme.bodySmall),
             const SizedBox(height: 12),
-            for (final tc in items)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 110,
-                      child: Text(
-                        tc.name,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    Expanded(
-                      child: LinearProgressIndicator(
-                        value: tc.count / maxCount,
-                        minHeight: 8,
-                        borderRadius: BorderRadius.circular(4),
-                        color: color,
-                        backgroundColor: color.withValues(alpha: 0.15),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Text('${l10n.countSuffix}${tc.count}'),
-                  ],
-                ),
-              ),
+            if (items.isEmpty)
+              Text(l10n.statsAssociationsEmpty, style: theme.textTheme.bodyMedium)
+            else ...[
+              _LeadInsight(top: stats.topAssociation!),
+              const SizedBox(height: 12),
+              for (final a in items) _AssociationRow(assoc: a),
+            ],
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _LeadInsight extends StatelessWidget {
+  const _LeadInsight({required this.top});
+  final TagAssociation top;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: scheme.primaryContainer.withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(CupertinoIcons.lightbulb, size: 18, color: scheme.primary),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              l10n.statsAssociationsLead(
+                top.tagName,
+                top.category.name,
+                (top.share * 100).round(),
+              ),
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AssociationRow extends StatelessWidget {
+  const _AssociationRow({required this.assoc});
+  final TagAssociation assoc;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final color = assoc.category.displayColor;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        children: [
+          Container(
+            width: 34,
+            height: 34,
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.18),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(iconForKey(assoc.category.icon), size: 18, color: color),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  assoc.tagName,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.bodyLarge,
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  assoc.category.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                LinearProgressIndicator(
+                  value: assoc.share.clamp(0.0, 1.0),
+                  minHeight: 7,
+                  borderRadius: BorderRadius.circular(4),
+                  color: color,
+                  backgroundColor: color.withValues(alpha: 0.15),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 10),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                '${assoc.headacheCount}×',
+                style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+              ),
+              Text(
+                '${(assoc.share * 100).round()}%',
+                style: theme.textTheme.bodySmall,
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

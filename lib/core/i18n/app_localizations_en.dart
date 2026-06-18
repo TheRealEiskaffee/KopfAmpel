@@ -66,15 +66,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noteHint => 'Optional note for this day';
 
   @override
-  String get triggersLabel => 'Triggers';
-
-  @override
-  String get medicationsLabel => 'Medications';
-
-  @override
-  String get doseHint => 'Dose (optional)';
-
-  @override
   String get addTag => 'Add';
 
   @override
@@ -85,6 +76,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noEntry => 'No entry yet';
+
+  @override
+  String get addEntry => 'Add entry';
+
+  @override
+  String get editEntry => 'Edit';
 
   @override
   String get deleteEntryTitle => 'Delete entry?';
@@ -166,10 +163,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dataSection => 'Data';
 
   @override
-  String get manageTriggers => 'Manage triggers';
+  String get manageCategories => 'Categories & tags';
 
   @override
-  String get manageMedications => 'Manage medications';
+  String get manageCategoriesDescription =>
+      'Create, edit and delete your own categories and their tags.';
 
   @override
   String get exportData => 'Export data';
@@ -212,13 +210,50 @@ class AppLocalizationsEn extends AppLocalizations {
       'All data stays on your device. KopfAmpel never sends anything to a server.';
 
   @override
-  String get manageTriggersTitle => 'Manage triggers';
+  String get addCategory => 'Add category';
 
   @override
-  String get manageMedicationsTitle => 'Manage medications';
+  String get addCategoryTitle => 'New category';
+
+  @override
+  String get editCategoryTitle => 'Edit category';
+
+  @override
+  String get categoryNameHint => 'Category name';
+
+  @override
+  String get chooseIcon => 'Icon';
+
+  @override
+  String get chooseColor => 'Colour';
+
+  @override
+  String get deleteCategoryTitle => 'Delete category?';
+
+  @override
+  String get deleteCategoryBody =>
+      'The category and all its tags will be deleted — also from any entries that use them.';
+
+  @override
+  String get emptyCategoryList => 'No categories yet. Tap + in the top right.';
+
+  @override
+  String categoryTagCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tags',
+      one: '1 tag',
+      zero: 'No tags',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get renameTagTitle => 'Rename';
+
+  @override
+  String get editTagTitle => 'Edit tag';
 
   @override
   String get deleteTagTitle => 'Delete?';
@@ -359,10 +394,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statsDistribution => 'Distribution';
 
   @override
-  String get statsTopTriggers => 'Top triggers';
+  String get statsAssociationsTitle => 'Linked to your headaches';
 
   @override
-  String get statsTopMedications => 'Top medications';
+  String get statsAssociationsHint =>
+      'Which tags showed up most often on your headache days.';
+
+  @override
+  String get statsAssociationsEmpty =>
+      'No headache days with tags in this range yet.';
+
+  @override
+  String statsAssociationsLead(String tag, String category, int percent) {
+    return '$tag ($category) was present on $percent% of your headache days — your strongest link.';
+  }
 
   @override
   String get statsNothing => 'No data in this range yet.';
@@ -449,17 +494,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingRepeatLabel => 'Ask again if ignored';
 
   @override
-  String get onboardingTagsTitle => 'Triggers & medications';
+  String get onboardingTagsTitle => 'Categories & tags';
 
   @override
   String get onboardingTagsBody =>
-      'We\'ve prepared a default list. You can tweak it now or later.';
+      'We\'ve prepared a few categories with tags. You can tweak them now or later.';
 
   @override
-  String get onboardingTagsManageTriggers => 'Edit triggers';
-
-  @override
-  String get onboardingTagsManageMedications => 'Edit medications';
+  String get onboardingTagsManage => 'Edit categories & tags';
 
   @override
   String get onboardingDoneTitle => 'All set';

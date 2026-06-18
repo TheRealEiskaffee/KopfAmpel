@@ -67,15 +67,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get noteHint => 'Optionale Anmerkung zu diesem Tag';
 
   @override
-  String get triggersLabel => 'Trigger';
-
-  @override
-  String get medicationsLabel => 'Medikamente';
-
-  @override
-  String get doseHint => 'Dosis (optional)';
-
-  @override
   String get addTag => 'Hinzufügen';
 
   @override
@@ -86,6 +77,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get noEntry => 'Noch kein Eintrag';
+
+  @override
+  String get addEntry => 'Eintrag anlegen';
+
+  @override
+  String get editEntry => 'Bearbeiten';
 
   @override
   String get deleteEntryTitle => 'Eintrag löschen?';
@@ -167,10 +164,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String get dataSection => 'Daten';
 
   @override
-  String get manageTriggers => 'Trigger verwalten';
+  String get manageCategories => 'Kategorien & Tags';
 
   @override
-  String get manageMedications => 'Medikamente verwalten';
+  String get manageCategoriesDescription =>
+      'Eigene Kategorien und ihre Tags anlegen, bearbeiten und löschen.';
 
   @override
   String get exportData => 'Daten exportieren';
@@ -213,13 +211,51 @@ class AppLocalizationsDe extends AppLocalizations {
       'Alle Daten bleiben ausschließlich auf deinem Gerät. KopfAmpel sendet nichts an Server.';
 
   @override
-  String get manageTriggersTitle => 'Trigger verwalten';
+  String get addCategory => 'Kategorie hinzufügen';
 
   @override
-  String get manageMedicationsTitle => 'Medikamente verwalten';
+  String get addCategoryTitle => 'Neue Kategorie';
+
+  @override
+  String get editCategoryTitle => 'Kategorie bearbeiten';
+
+  @override
+  String get categoryNameHint => 'Name der Kategorie';
+
+  @override
+  String get chooseIcon => 'Icon';
+
+  @override
+  String get chooseColor => 'Farbe';
+
+  @override
+  String get deleteCategoryTitle => 'Kategorie löschen?';
+
+  @override
+  String get deleteCategoryBody =>
+      'Die Kategorie und alle ihre Tags werden gelöscht – auch aus Einträgen, die sie nutzen.';
+
+  @override
+  String get emptyCategoryList =>
+      'Noch keine Kategorie. Tippe oben rechts auf +.';
+
+  @override
+  String categoryTagCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Tags',
+      one: '1 Tag',
+      zero: 'Keine Tags',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get renameTagTitle => 'Umbenennen';
+
+  @override
+  String get editTagTitle => 'Tag bearbeiten';
 
   @override
   String get deleteTagTitle => 'Löschen?';
@@ -360,10 +396,20 @@ class AppLocalizationsDe extends AppLocalizations {
   String get statsDistribution => 'Verteilung';
 
   @override
-  String get statsTopTriggers => 'Häufigste Trigger';
+  String get statsAssociationsTitle => 'Zusammenhänge bei Kopfschmerzen';
 
   @override
-  String get statsTopMedications => 'Häufigste Medikamente';
+  String get statsAssociationsHint =>
+      'Welche Tags an deinen Kopfschmerz-Tagen am häufigsten dabei waren.';
+
+  @override
+  String get statsAssociationsEmpty =>
+      'Noch keine Kopfschmerz-Tage mit Tags in diesem Zeitraum.';
+
+  @override
+  String statsAssociationsLead(String tag, String category, int percent) {
+    return '$tag ($category) war an $percent% deiner Kopfschmerz-Tage dabei – dein stärkster Zusammenhang.';
+  }
 
   @override
   String get statsNothing => 'Noch keine Daten in diesem Zeitraum.';
@@ -450,17 +496,14 @@ class AppLocalizationsDe extends AppLocalizations {
   String get onboardingRepeatLabel => 'Bei Ignorieren erneut fragen';
 
   @override
-  String get onboardingTagsTitle => 'Trigger & Medikamente';
+  String get onboardingTagsTitle => 'Kategorien & Tags';
 
   @override
   String get onboardingTagsBody =>
-      'Wir haben eine Standard-Liste vorbereitet. Du kannst sie jetzt oder später anpassen.';
+      'Wir haben ein paar Kategorien mit Tags vorbereitet. Du kannst sie jetzt oder später anpassen.';
 
   @override
-  String get onboardingTagsManageTriggers => 'Trigger anpassen';
-
-  @override
-  String get onboardingTagsManageMedications => 'Medikamente anpassen';
+  String get onboardingTagsManage => 'Kategorien & Tags anpassen';
 
   @override
   String get onboardingDoneTitle => 'Alles bereit';

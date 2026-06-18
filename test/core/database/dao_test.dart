@@ -1,9 +1,8 @@
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kopfampel/core/database/app_database.dart';
-import 'package:kopfampel/core/database/seeders/default_tags.dart';
+import 'package:kopfampel/core/database/seeders/default_categories.dart';
 import 'package:kopfampel/core/domain/severity.dart';
-import 'package:kopfampel/core/domain/tag_kind.dart';
 
 void main() {
   late AppDatabase db;
@@ -29,47 +28,55 @@ void main() {
     });
   });
 
-  group('TagsDao + DefaultTags seeder', () {
-    test('seeds German triggers and medications when empty', () async {
-      await DefaultTags.seedIfEmpty(db, locale: 'de');
-      final triggers = await db.tagsDao.watchByKind(TagKind.trigger.value).first;
-      final meds = await db.tagsDao.watchByKind(TagKind.medication.value).first;
+  group('DefaultCategories seeder', () {
+    test('seeds the predefined categories with their tags when empty', () async {
+      await DefaultCategories.seedIfEmpty(db, locale: 'de');
+      final cats = await db.categoriesDao.all();
+      final expected = DefaultCategories.forLocale('de');
+      expect(cats.length, expected.length);
 
-      expect(triggers.length, DefaultTags.triggers('de').length);
-      expect(meds.length, DefaultTags.medications('de').length);
-      expect(triggers.first.isCustom, false);
+      final totalExpectedTags =
+          expected.fold<int>(0, (sum, c) => sum + c.tags.length);
+      final allTags = await db.tagsDao.all();
+      expect(allTags.length, totalExpectedTags);
+      expect(allTags.first.isCustom, false);
     });
 
     test('seeder is idempotent', () async {
-      await DefaultTags.seedIfEmpty(db, locale: 'de');
-      await DefaultTags.seedIfEmpty(db, locale: 'de');
-      final all = await db.tagsDao.all();
-      expect(
-        all.length,
-        DefaultTags.triggers('de').length + DefaultTags.medications('de').length,
-      );
+      await DefaultCategories.seedIfEmpty(db, locale: 'de');
+      await DefaultCategories.seedIfEmpty(db, locale: 'de');
+      final cats = await db.categoriesDao.all();
+      expect(cats.length, DefaultCategories.forLocale('de').length);
     });
 
-    test('insertIfMissing dedupes by (name, kind)', () async {
-      await db.tagsDao.create(name: 'Stress', kind: TagKind.trigger.value);
+    test('insertIfMissing dedupes by (name, categoryId)', () async {
+      final catId = await db.categoriesDao.create(name: 'Trigger', isCustom: false);
+      await db.tagsDao.create(name: 'Stress', categoryId: catId);
       final result = await db.tagsDao.insertIfMissing(
         name: 'Stress',
-        kind: TagKind.trigger.value,
+        categoryId: catId,
       );
       expect(result, isNull);
     });
   });
 
+  group('CategoriesDao', () {
+    test('deleting a category cascades to its tags', () async {
+      final catId = await db.categoriesDao.create(name: 'Trigger');
+      await db.tagsDao.create(name: 'Stress', categoryId: catId);
+      await db.tagsDao.create(name: 'Wetter', categoryId: catId);
+      expect((await db.tagsDao.all()).length, 2);
+
+      await db.categoriesDao.deleteById(catId);
+      expect(await db.tagsDao.all(), isEmpty);
+    });
+  });
+
   group('EntriesDao', () {
     test('upsert inserts a new entry, then updates the same date in place', () async {
-      final triggerId = await db.tagsDao.create(
-        name: 'Stress',
-        kind: TagKind.trigger.value,
-      );
-      final medId = await db.tagsDao.create(
-        name: 'Ibuprofen',
-        kind: TagKind.medication.value,
-      );
+      final catId = await db.categoriesDao.create(name: 'Trigger');
+      final tagA = await db.tagsDao.create(name: 'Stress', categoryId: catId);
+      final tagB = await db.tagsDao.create(name: 'Ibuprofen', categoryId: catId);
 
       final today = DateTime(2026, 6, 17);
 
@@ -77,8 +84,7 @@ void main() {
         date: today,
         severity: Severity.yellow.value,
         note: 'morgens leicht',
-        triggerTagIds: [triggerId],
-        medicationTagIdsToDose: {medId: '400mg'},
+        tagIds: [tagA, tagB],
       );
 
       final loaded = await db.entriesDao.findByDate(today);
@@ -87,15 +93,13 @@ void main() {
       expect(loaded.entry.severity, Severity.yellow.value);
       expect(loaded.entry.note, 'morgens leicht');
       expect(loaded.tags.length, 2);
-      expect(loaded.doses[medId], '400mg');
 
       // Second upsert overwrites severity, note, and tag set.
       final secondId = await db.entriesDao.upsert(
         date: today,
         severity: Severity.red.value,
         note: null,
-        triggerTagIds: const [],
-        medicationTagIdsToDose: const {},
+        tagIds: const [],
       );
       expect(secondId, firstId, reason: 'second upsert must keep the same row');
 
@@ -110,8 +114,7 @@ void main() {
       await db.entriesDao.upsert(
         date: today,
         severity: Severity.green.value,
-        triggerTagIds: const [],
-        medicationTagIdsToDose: const {},
+        tagIds: const [],
       );
       expect(await db.entriesDao.findByDate(today), isNotNull);
 

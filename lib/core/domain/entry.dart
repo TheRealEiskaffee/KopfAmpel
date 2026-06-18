@@ -7,8 +7,7 @@ class HeadacheEntry {
     required this.date,
     required this.severity,
     this.note,
-    this.triggers = const [],
-    this.medications = const [],
+    this.tags = const [],
     required this.createdAt,
     required this.updatedAt,
   });
@@ -17,14 +16,7 @@ class HeadacheEntry {
   final DateTime date;
   final Severity severity;
   final String? note;
-  final List<Tag> triggers;
-  final List<MedicationEntry> medications;
+  final List<Tag> tags;
   final DateTime createdAt;
   final DateTime updatedAt;
-}
-
-class MedicationEntry {
-  const MedicationEntry({required this.tag, this.dose});
-  final Tag tag;
-  final String? dose;
 }

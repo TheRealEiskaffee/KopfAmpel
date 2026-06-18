@@ -4,13 +4,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../app/theme/ampel_colors.dart';
+import '../../../app/theme/category_icons.dart';
 import '../../../app/theme/tag_palette.dart';
 import '../../../core/database/database_providers.dart';
+import '../../../core/domain/category.dart';
 import '../../../core/domain/entry.dart';
 import '../../../core/domain/severity.dart';
 import '../../../core/domain/tag.dart';
-import '../../../core/domain/tag_kind.dart';
 import '../../../core/i18n/app_localizations.dart';
+import '../../../widgets/confirm_dialog.dart';
 import '../application/calendar_providers.dart';
 
 class DayDetailSheet extends ConsumerStatefulWidget {
@@ -23,6 +25,11 @@ class DayDetailSheet extends ConsumerStatefulWidget {
       context: context,
       isScrollControlled: true,
       showDragHandle: true,
+      // Cap the height so it stays a draggable bottom sheet (pill + backdrop
+      // above) instead of filling the whole screen when there are many tags.
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.82,
+      ),
       builder: (_) => DayDetailSheet(date: date),
     );
   }
@@ -34,55 +41,41 @@ class DayDetailSheet extends ConsumerStatefulWidget {
 class _DayDetailSheetState extends ConsumerState<DayDetailSheet> {
   Severity _severity = Severity.none;
   final _noteController = TextEditingController();
-  final Set<int> _selectedTriggers = {};
-  final Map<int, TextEditingController> _doseControllers = {};
+  final Set<int> _selectedTagIds = {};
   bool _loaded = false;
   bool _existingEntry = false;
 
   @override
   void dispose() {
     _noteController.dispose();
-    for (final c in _doseControllers.values) {
-      c.dispose();
-    }
     super.dispose();
   }
 
   void _hydrateFromEntry(HeadacheEntry entry) {
     _severity = entry.severity;
     _noteController.text = entry.note ?? '';
-    _selectedTriggers
+    _selectedTagIds
       ..clear()
-      ..addAll(entry.triggers.map((t) => t.id));
-    for (final m in entry.medications) {
-      _doseControllers[m.tag.id] = TextEditingController(text: m.dose ?? '');
-    }
+      ..addAll(entry.tags.map((t) => t.id));
     _existingEntry = true;
   }
 
-  TextEditingController _doseController(int medId) {
-    return _doseControllers.putIfAbsent(medId, TextEditingController.new);
+  void _toggleTag(int id) {
+    setState(() {
+      if (!_selectedTagIds.add(id)) _selectedTagIds.remove(id);
+    });
   }
 
   Future<void> _save() async {
-    final medications = _doseControllers.entries
-        .map(
-          (e) => MedicationEntry(
-            tag: Tag(id: e.key, name: '', kind: TagKind.medication),
-            dose: e.value.text.trim().isEmpty ? null : e.value.text.trim(),
-          ),
-        )
-        .toList();
-    final triggers = _selectedTriggers
-        .map((id) => Tag(id: id, name: '', kind: TagKind.trigger))
+    final tags = _selectedTagIds
+        .map((id) => Tag(id: id, name: '', categoryId: 0))
         .toList();
 
     await ref.read(entriesRepositoryProvider).upsert(
           date: widget.date,
           severity: _severity,
           note: _noteController.text.trim().isEmpty ? null : _noteController.text.trim(),
-          triggers: triggers,
-          medications: medications,
+          tags: tags,
         );
     ref.invalidate(entryByDayProvider(widget.date));
     if (mounted) Navigator.of(context).pop();
@@ -90,34 +83,14 @@ class _DayDetailSheetState extends ConsumerState<DayDetailSheet> {
 
   Future<void> _delete() async {
     final l10n = AppLocalizations.of(context);
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l10n.deleteEntryTitle),
-        content: Text(l10n.deleteEntryBody),
-        actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-        actions: [
-          Row(
-            children: [
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: () => Navigator.of(ctx).pop(false),
-                  child: Text(l10n.cancel),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: FilledButton.tonal(
-                  onPressed: () => Navigator.of(ctx).pop(true),
-                  child: Text(l10n.delete),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+    final ok = await showConfirmDialog(
+      context,
+      title: l10n.deleteEntryTitle,
+      message: l10n.deleteEntryBody,
+      confirmLabel: l10n.delete,
+      destructive: true,
     );
-    if (confirmed != true) return;
+    if (!ok) return;
     await ref.read(entriesRepositoryProvider).deleteByDate(widget.date);
     ref.invalidate(entryByDayProvider(widget.date));
     if (mounted) Navigator.of(context).pop();
@@ -130,8 +103,7 @@ class _DayDetailSheetState extends ConsumerState<DayDetailSheet> {
     final dateLabel = DateFormat.yMMMMEEEEd(locale).format(widget.date);
 
     final entryAsync = ref.watch(entryByDayProvider(widget.date));
-    final triggersAsync = ref.watch(triggerTagsProvider);
-    final medsAsync = ref.watch(medicationTagsProvider);
+    final categoriesAsync = ref.watch(categoriesProvider);
 
     entryAsync.whenData((entry) {
       if (!_loaded) {
@@ -145,90 +117,217 @@ class _DayDetailSheetState extends ConsumerState<DayDetailSheet> {
         left: 16,
         right: 16,
         top: 8,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+        bottom: MediaQuery.of(context).viewInsets.bottom +
+            MediaQuery.of(context).viewPadding.bottom +
+            16,
       ),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(dateLabel, style: Theme.of(context).textTheme.titleLarge),
-            const SizedBox(height: 16),
-            Text(l10n.selectSeverity, style: Theme.of(context).textTheme.titleSmall),
-            const SizedBox(height: 8),
-            _SeverityPicker(
-              value: _severity,
-              onChanged: (v) => setState(() => _severity = v),
-            ),
-            const SizedBox(height: 24),
-            TextField(
-              controller: _noteController,
-              minLines: 1,
-              maxLines: 4,
-              decoration: InputDecoration(
-                labelText: l10n.noteLabel,
-                hintText: l10n.noteHint,
-                border: const OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 24),
-            Text(l10n.triggersLabel, style: Theme.of(context).textTheme.titleSmall),
-            const SizedBox(height: 8),
-            _TagChipGrid(
-              tagsAsync: triggersAsync,
-              selectedIds: _selectedTriggers,
-              onToggle: (id) {
-                setState(() {
-                  if (!_selectedTriggers.add(id)) _selectedTriggers.remove(id);
-                });
-              },
-            ),
-            const SizedBox(height: 24),
-            Text(l10n.medicationsLabel, style: Theme.of(context).textTheme.titleSmall),
-            const SizedBox(height: 8),
-            _MedicationSection(
-              medsAsync: medsAsync,
-              selectedIds: _doseControllers.keys.toSet(),
-              onToggle: (id) {
-                setState(() {
-                  if (_doseControllers.containsKey(id)) {
-                    _doseControllers.remove(id)?.dispose();
-                  } else {
-                    _doseController(id);
-                  }
-                });
-              },
-              controllerFor: _doseController,
-              doseHint: l10n.doseHint,
-              tagNameById: (id) => medsAsync.maybeWhen(
-                data: (list) => list.firstWhere(
-                  (t) => t.id == id,
-                  orElse: () => Tag(id: id, name: '?', kind: TagKind.medication),
-                ).name,
-                orElse: () => '',
-              ),
-            ),
-            const SizedBox(height: 24),
-            Row(
-              children: [
-                if (_existingEntry)
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: _delete,
-                      icon: const Icon(CupertinoIcons.delete, size: 18),
-                      label: Text(l10n.delete),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          dateLabel,
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                      ),
+                      if (_existingEntry)
+                        IconButton(
+                          tooltip: l10n.delete,
+                          onPressed: _delete,
+                          icon: Icon(
+                            CupertinoIcons.delete,
+                            size: 20,
+                            color: Theme.of(context).colorScheme.error,
+                          ),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Text(l10n.selectSeverity, style: Theme.of(context).textTheme.titleSmall),
+                  const SizedBox(height: 8),
+                  _SeverityPicker(
+                    value: _severity,
+                    onChanged: (v) => setState(() => _severity = v),
+                  ),
+                  const SizedBox(height: 24),
+                  TextField(
+                    controller: _noteController,
+                    minLines: 1,
+                    maxLines: 4,
+                    decoration: InputDecoration(
+                      labelText: l10n.noteLabel,
+                      hintText: l10n.noteHint,
+                      border: const OutlineInputBorder(),
                     ),
                   ),
-                if (_existingEntry) const SizedBox(width: 12),
-                Expanded(
-                  child: FilledButton(
-                    onPressed: _save,
-                    child: Text(l10n.save),
+                  const SizedBox(height: 16),
+                  categoriesAsync.when(
+                    data: (categories) => Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        for (final category in categories)
+                          _CategorySection(
+                            category: category,
+                            selectedIds: _selectedTagIds,
+                            onToggle: _toggleTag,
+                          ),
+                      ],
+                    ),
+                    loading: () => const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8),
+                      child: LinearProgressIndicator(),
+                    ),
+                    error: (e, _) => Text(l10n.loadFailed(e.toString())),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 8),
+                ],
+              ),
             ),
-          ],
-        ),
+          ),
+          const Divider(height: 17),
+          // Pinned action bar — stays visible no matter how long the content is.
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text(l10n.cancel),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: FilledButton(
+                  onPressed: _save,
+                  child: Text(l10n.save),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// One category's header + selectable tag chips. Hidden when the category has
+/// no tags so empty categories don't clutter the entry sheet.
+class _CategorySection extends ConsumerWidget {
+  const _CategorySection({
+    required this.category,
+    required this.selectedIds,
+    required this.onToggle,
+  });
+
+  final Category category;
+  final Set<int> selectedIds;
+  final ValueChanged<int> onToggle;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tagsAsync = ref.watch(tagsByCategoryProvider(category.id));
+    final tags = tagsAsync.valueOrNull ?? const [];
+    if (tags.isEmpty) return const SizedBox.shrink();
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(iconForKey(category.icon), size: 18, color: category.displayColor),
+              const SizedBox(width: 8),
+              Text(category.name, style: Theme.of(context).textTheme.titleSmall),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final t in tags)
+                _SelectableColorChip(
+                  color: t.displayColor,
+                  label: t.name,
+                  selected: selectedIds.contains(t.id),
+                  onSelected: () => onToggle(t.id),
+                ),
+            ],
+          ),
+          const SizedBox(height: 8),
+        ],
+      ),
+    );
+  }
+}
+
+/// Selectable colour chip shared by the tag grid and the severity picker.
+/// Selected → background is a light shade of [color] and the checkmark is a
+/// darker shade of the same hue (always darker than the background); the colour
+/// dot is hidden. Unselected → outlined, no grey fill, dot visible. Greys (e.g.
+/// the "no headache" severity) stay grey.
+class _SelectableColorChip extends StatelessWidget {
+  const _SelectableColorChip({
+    required this.color,
+    required this.label,
+    required this.selected,
+    required this.onSelected,
+  });
+
+  final Color color;
+  final String label;
+  final bool selected;
+  final VoidCallback onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final hsl = HSLColor.fromColor(color);
+    // Keep near-grey colours grey; boost real colours so the light selected
+    // fill reads clearly.
+    final sat = hsl.saturation < 0.15 ? hsl.saturation : 0.85;
+    final selectedBg = hsl.withSaturation(sat).withLightness(0.86).toColor();
+    final checkColor = hsl.withLightness(0.38).toColor();
+
+    return Theme(
+      // Remove the grey press/hover overlay so tapping a chip doesn't flash grey.
+      data: Theme.of(context).copyWith(
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        splashFactory: NoSplash.splashFactory,
+      ),
+      child: FilterChip(
+      selected: selected,
+      showCheckmark: true,
+      checkmarkColor: checkColor,
+      selectedColor: selectedBg,
+      backgroundColor: Colors.transparent,
+      side: BorderSide(
+        color: selected ? selectedBg : scheme.outlineVariant,
+      ),
+      // FilterChip keeps the avatar AND adds the checkmark when selected, which
+      // shows two dots. Drop the avatar while selected so only the checkmark
+      // (in the darker shade) remains.
+      avatar: selected
+          ? null
+          : Container(
+              width: 10,
+              height: 10,
+              decoration: BoxDecoration(
+                color: color,
+                shape: BoxShape.circle,
+              ),
+            ),
+      label: Text(label),
+      onSelected: (_) => onSelected(),
       ),
     );
   }
@@ -254,135 +353,13 @@ class _SeverityPicker extends StatelessWidget {
       runSpacing: 8,
       children: [
         for (final (sev, color, label) in items)
-          ChoiceChip(
+          _SelectableColorChip(
+            color: color,
+            label: label,
             selected: value == sev,
-            onSelected: (_) => onChanged(sev),
-            avatar: CircleAvatar(backgroundColor: color, radius: 8),
-            label: Text(label),
+            onSelected: () => onChanged(sev),
           ),
       ],
-    );
-  }
-}
-
-class _TagChipGrid extends StatelessWidget {
-  const _TagChipGrid({
-    required this.tagsAsync,
-    required this.selectedIds,
-    required this.onToggle,
-  });
-
-  final AsyncValue<List<Tag>> tagsAsync;
-  final Set<int> selectedIds;
-  final ValueChanged<int> onToggle;
-
-  @override
-  Widget build(BuildContext context) {
-    return tagsAsync.when(
-      data: (tags) => Wrap(
-        spacing: 8,
-        runSpacing: 8,
-        children: [
-          for (final t in tags)
-            FilterChip(
-              selected: selectedIds.contains(t.id),
-              avatar: Container(
-                width: 10,
-                height: 10,
-                decoration: BoxDecoration(
-                  color: t.displayColor,
-                  shape: BoxShape.circle,
-                ),
-              ),
-              label: Text(t.name),
-              onSelected: (_) => onToggle(t.id),
-            ),
-        ],
-      ),
-      loading: () => const Padding(
-        padding: EdgeInsets.symmetric(vertical: 8),
-        child: LinearProgressIndicator(),
-      ),
-      error: (e, _) => Text(AppLocalizations.of(context).loadFailed(e.toString())),
-    );
-  }
-}
-
-class _MedicationSection extends StatelessWidget {
-  const _MedicationSection({
-    required this.medsAsync,
-    required this.selectedIds,
-    required this.onToggle,
-    required this.controllerFor,
-    required this.doseHint,
-    required this.tagNameById,
-  });
-
-  final AsyncValue<List<Tag>> medsAsync;
-  final Set<int> selectedIds;
-  final ValueChanged<int> onToggle;
-  final TextEditingController Function(int) controllerFor;
-  final String doseHint;
-  final String Function(int) tagNameById;
-
-  @override
-  Widget build(BuildContext context) {
-    return medsAsync.when(
-      data: (meds) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                for (final t in meds)
-                  FilterChip(
-                    selected: selectedIds.contains(t.id),
-                    avatar: Container(
-                      width: 10,
-                      height: 10,
-                      decoration: BoxDecoration(
-                        color: t.displayColor,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    label: Text(t.name),
-                    onSelected: (_) => onToggle(t.id),
-                  ),
-              ],
-            ),
-            if (selectedIds.isNotEmpty) ...[
-              const SizedBox(height: 12),
-              for (final id in selectedIds)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 2,
-                        child: Text(tagNameById(id)),
-                      ),
-                      Expanded(
-                        flex: 3,
-                        child: TextField(
-                          controller: controllerFor(id),
-                          decoration: InputDecoration(
-                            hintText: doseHint,
-                            isDense: true,
-                            border: const OutlineInputBorder(),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-            ],
-          ],
-        );
-      },
-      loading: () => const LinearProgressIndicator(),
-      error: (e, _) => Text(AppLocalizations.of(context).loadFailed(e.toString())),
     );
   }
 }

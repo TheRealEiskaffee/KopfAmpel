@@ -1,9 +1,8 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'tags_dao.dart';
+part of 'categories_dao.dart';
 
 // ignore_for_file: type=lint
-mixin _$TagsDaoMixin on DatabaseAccessor<AppDatabase> {
+mixin _$CategoriesDaoMixin on DatabaseAccessor<AppDatabase> {
   $CategoriesTable get categories => attachedDatabase.categories;
-  $TagsTable get tags => attachedDatabase.tags;
 }

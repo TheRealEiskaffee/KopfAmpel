@@ -4,13 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/database/app_database.dart';
 import '../../../core/database/database_providers.dart';
-import '../../../core/domain/tag_kind.dart';
 import '../../../core/i18n/app_localizations.dart';
 import '../../../core/notifications/notification_providers.dart';
 import '../../../widgets/cupertino_time_sheet.dart';
 import '../../export/presentation/export_screen.dart';
 import '../application/settings_actions.dart';
-import 'tag_management_screen.dart';
+import 'category_management_screen.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -96,21 +95,12 @@ class _SettingsBody extends ConsumerWidget {
           children: [
             ListTile(
               leading: const Icon(CupertinoIcons.tag),
-              title: Text(l10n.manageTriggers),
+              title: Text(l10n.manageCategories),
+              subtitle: Text(l10n.manageCategoriesDescription),
               trailing: const Icon(CupertinoIcons.chevron_right, size: 18),
               onTap: () => Navigator.of(context).push(
                 CupertinoPageRoute<void>(
-                  builder: (_) => const TagManagementScreen(kind: TagKind.trigger),
-                ),
-              ),
-            ),
-            ListTile(
-              leading: const Icon(CupertinoIcons.bandage),
-              title: Text(l10n.manageMedications),
-              trailing: const Icon(CupertinoIcons.chevron_right, size: 18),
-              onTap: () => Navigator.of(context).push(
-                CupertinoPageRoute<void>(
-                  builder: (_) => const TagManagementScreen(kind: TagKind.medication),
+                  builder: (_) => const CategoryManagementScreen(),
                 ),
               ),
             ),

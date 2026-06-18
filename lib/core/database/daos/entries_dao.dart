@@ -9,10 +9,9 @@ import '../tables/tags.dart';
 part 'entries_dao.g.dart';
 
 class EntryWithTags {
-  EntryWithTags({required this.entry, required this.tags, required this.doses});
+  EntryWithTags({required this.entry, required this.tags});
   final EntryRow entry;
   final List<TagRow> tags;
-  final Map<int, String?> doses;
 }
 
 @DriftAccessor(tables: [Entries, EntryTags, Tags])
@@ -39,8 +38,7 @@ class EntriesDao extends DatabaseAccessor<AppDatabase> with _$EntriesDaoMixin {
     required DateTime date,
     required String severity,
     String? note,
-    required List<int> triggerTagIds,
-    required Map<int, String?> medicationTagIdsToDose,
+    required List<int> tagIds,
   }) async {
     final key = dayKey(date);
     final now = DateTime.now();
@@ -71,18 +69,9 @@ class EntriesDao extends DatabaseAccessor<AppDatabase> with _$EntriesDaoMixin {
         await (delete(entryTags)..where((et) => et.entryId.equals(id))).go();
       }
 
-      for (final tagId in triggerTagIds) {
+      for (final tagId in tagIds) {
         await into(entryTags).insert(
           EntryTagsCompanion.insert(entryId: id, tagId: tagId),
-        );
-      }
-      for (final entry in medicationTagIdsToDose.entries) {
-        await into(entryTags).insert(
-          EntryTagsCompanion.insert(
-            entryId: id,
-            tagId: entry.key,
-            dose: Value(entry.value),
-          ),
         );
       }
       return id;
@@ -101,9 +90,6 @@ class EntriesDao extends DatabaseAccessor<AppDatabase> with _$EntriesDaoMixin {
           ..where(entryTags.entryId.equals(row.id)))
         .get();
     final tagsList = joinRows.map((r) => r.readTable(tags)).toList();
-    final dosesMap = <int, String?>{
-      for (final r in joinRows) r.readTable(entryTags).tagId: r.readTable(entryTags).dose,
-    };
-    return EntryWithTags(entry: row, tags: tagsList, doses: dosesMap);
+    return EntryWithTags(entry: row, tags: tagsList);
   }
 }

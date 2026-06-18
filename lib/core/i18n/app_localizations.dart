@@ -212,24 +212,6 @@ abstract class AppLocalizations {
   /// **'Optionale Anmerkung zu diesem Tag'**
   String get noteHint;
 
-  /// No description provided for @triggersLabel.
-  ///
-  /// In de, this message translates to:
-  /// **'Trigger'**
-  String get triggersLabel;
-
-  /// No description provided for @medicationsLabel.
-  ///
-  /// In de, this message translates to:
-  /// **'Medikamente'**
-  String get medicationsLabel;
-
-  /// No description provided for @doseHint.
-  ///
-  /// In de, this message translates to:
-  /// **'Dosis (optional)'**
-  String get doseHint;
-
   /// No description provided for @addTag.
   ///
   /// In de, this message translates to:
@@ -253,6 +235,18 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Noch kein Eintrag'**
   String get noEntry;
+
+  /// No description provided for @addEntry.
+  ///
+  /// In de, this message translates to:
+  /// **'Eintrag anlegen'**
+  String get addEntry;
+
+  /// No description provided for @editEntry.
+  ///
+  /// In de, this message translates to:
+  /// **'Bearbeiten'**
+  String get editEntry;
 
   /// No description provided for @deleteEntryTitle.
   ///
@@ -398,17 +392,17 @@ abstract class AppLocalizations {
   /// **'Daten'**
   String get dataSection;
 
-  /// No description provided for @manageTriggers.
+  /// No description provided for @manageCategories.
   ///
   /// In de, this message translates to:
-  /// **'Trigger verwalten'**
-  String get manageTriggers;
+  /// **'Kategorien & Tags'**
+  String get manageCategories;
 
-  /// No description provided for @manageMedications.
+  /// No description provided for @manageCategoriesDescription.
   ///
   /// In de, this message translates to:
-  /// **'Medikamente verwalten'**
-  String get manageMedications;
+  /// **'Eigene Kategorien und ihre Tags anlegen, bearbeiten und löschen.'**
+  String get manageCategoriesDescription;
 
   /// No description provided for @exportData.
   ///
@@ -488,23 +482,77 @@ abstract class AppLocalizations {
   /// **'Alle Daten bleiben ausschließlich auf deinem Gerät. KopfAmpel sendet nichts an Server.'**
   String get privacyInfo;
 
-  /// No description provided for @manageTriggersTitle.
+  /// No description provided for @addCategory.
   ///
   /// In de, this message translates to:
-  /// **'Trigger verwalten'**
-  String get manageTriggersTitle;
+  /// **'Kategorie hinzufügen'**
+  String get addCategory;
 
-  /// No description provided for @manageMedicationsTitle.
+  /// No description provided for @addCategoryTitle.
   ///
   /// In de, this message translates to:
-  /// **'Medikamente verwalten'**
-  String get manageMedicationsTitle;
+  /// **'Neue Kategorie'**
+  String get addCategoryTitle;
+
+  /// No description provided for @editCategoryTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Kategorie bearbeiten'**
+  String get editCategoryTitle;
+
+  /// No description provided for @categoryNameHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Name der Kategorie'**
+  String get categoryNameHint;
+
+  /// No description provided for @chooseIcon.
+  ///
+  /// In de, this message translates to:
+  /// **'Icon'**
+  String get chooseIcon;
+
+  /// No description provided for @chooseColor.
+  ///
+  /// In de, this message translates to:
+  /// **'Farbe'**
+  String get chooseColor;
+
+  /// No description provided for @deleteCategoryTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Kategorie löschen?'**
+  String get deleteCategoryTitle;
+
+  /// No description provided for @deleteCategoryBody.
+  ///
+  /// In de, this message translates to:
+  /// **'Die Kategorie und alle ihre Tags werden gelöscht – auch aus Einträgen, die sie nutzen.'**
+  String get deleteCategoryBody;
+
+  /// No description provided for @emptyCategoryList.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine Kategorie. Tippe oben rechts auf +.'**
+  String get emptyCategoryList;
+
+  /// No description provided for @categoryTagCount.
+  ///
+  /// In de, this message translates to:
+  /// **'{count, plural, =0{Keine Tags} =1{1 Tag} other{{count} Tags}}'**
+  String categoryTagCount(int count);
 
   /// No description provided for @renameTagTitle.
   ///
   /// In de, this message translates to:
   /// **'Umbenennen'**
   String get renameTagTitle;
+
+  /// No description provided for @editTagTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Tag bearbeiten'**
+  String get editTagTitle;
 
   /// No description provided for @deleteTagTitle.
   ///
@@ -746,17 +794,29 @@ abstract class AppLocalizations {
   /// **'Verteilung'**
   String get statsDistribution;
 
-  /// No description provided for @statsTopTriggers.
+  /// No description provided for @statsAssociationsTitle.
   ///
   /// In de, this message translates to:
-  /// **'Häufigste Trigger'**
-  String get statsTopTriggers;
+  /// **'Zusammenhänge bei Kopfschmerzen'**
+  String get statsAssociationsTitle;
 
-  /// No description provided for @statsTopMedications.
+  /// No description provided for @statsAssociationsHint.
   ///
   /// In de, this message translates to:
-  /// **'Häufigste Medikamente'**
-  String get statsTopMedications;
+  /// **'Welche Tags an deinen Kopfschmerz-Tagen am häufigsten dabei waren.'**
+  String get statsAssociationsHint;
+
+  /// No description provided for @statsAssociationsEmpty.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine Kopfschmerz-Tage mit Tags in diesem Zeitraum.'**
+  String get statsAssociationsEmpty;
+
+  /// No description provided for @statsAssociationsLead.
+  ///
+  /// In de, this message translates to:
+  /// **'{tag} ({category}) war an {percent}% deiner Kopfschmerz-Tage dabei – dein stärkster Zusammenhang.'**
+  String statsAssociationsLead(String tag, String category, int percent);
 
   /// No description provided for @statsNothing.
   ///
@@ -911,26 +971,20 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingTagsTitle.
   ///
   /// In de, this message translates to:
-  /// **'Trigger & Medikamente'**
+  /// **'Kategorien & Tags'**
   String get onboardingTagsTitle;
 
   /// No description provided for @onboardingTagsBody.
   ///
   /// In de, this message translates to:
-  /// **'Wir haben eine Standard-Liste vorbereitet. Du kannst sie jetzt oder später anpassen.'**
+  /// **'Wir haben ein paar Kategorien mit Tags vorbereitet. Du kannst sie jetzt oder später anpassen.'**
   String get onboardingTagsBody;
 
-  /// No description provided for @onboardingTagsManageTriggers.
+  /// No description provided for @onboardingTagsManage.
   ///
   /// In de, this message translates to:
-  /// **'Trigger anpassen'**
-  String get onboardingTagsManageTriggers;
-
-  /// No description provided for @onboardingTagsManageMedications.
-  ///
-  /// In de, this message translates to:
-  /// **'Medikamente anpassen'**
-  String get onboardingTagsManageMedications;
+  /// **'Kategorien & Tags anpassen'**
+  String get onboardingTagsManage;
 
   /// No description provided for @onboardingDoneTitle.
   ///
