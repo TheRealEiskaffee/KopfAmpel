@@ -380,6 +380,12 @@ abstract class AppLocalizations {
   /// **'Max. Wiederholungen pro Tag'**
   String get reminderMaxRepeats;
 
+  /// No description provided for @reminderMaxRepeatsAlways.
+  ///
+  /// In de, this message translates to:
+  /// **'Immer'**
+  String get reminderMaxRepeatsAlways;
+
   /// No description provided for @minutesSuffix.
   ///
   /// In de, this message translates to:

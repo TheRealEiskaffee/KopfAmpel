@@ -157,6 +157,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reminderMaxRepeats => 'Max repeats per day';
 
   @override
+  String get reminderMaxRepeatsAlways => 'Always';
+
+  @override
   String get minutesSuffix => 'min';
 
   @override

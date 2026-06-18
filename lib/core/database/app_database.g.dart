@@ -2003,7 +2003,7 @@ class $AppSettingsTable extends AppSettings
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: false,
-    defaultValue: const Constant(3),
+    defaultValue: const Constant(kAlwaysRepeats),
   );
   static const VerificationMeta _localeMeta = const VerificationMeta('locale');
   @override

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/database/app_database.dart';
 import '../../../core/database/database_providers.dart';
+import '../../../core/database/tables/app_settings.dart';
 import '../../../core/i18n/app_localizations.dart';
 import '../../../core/notifications/notification_providers.dart';
 import '../../../widgets/cupertino_time_sheet.dart';
@@ -364,19 +365,59 @@ class _MaxRepeatsTile extends StatelessWidget {
   final int value;
   final Future<void> Function(int) onChanged;
 
+  static const List<int> _options = [1, 2, 3, 5, 10, kAlwaysRepeats];
+
+  String _label(BuildContext context, int v) =>
+      v >= kAlwaysRepeats ? AppLocalizations.of(context).reminderMaxRepeatsAlways : '$v';
+
+  Future<void> _pick(BuildContext context) async {
+    final l10n = AppLocalizations.of(context);
+    final picked = await showCupertinoModalPopup<int>(
+      context: context,
+      builder: (ctx) => CupertinoActionSheet(
+        title: Text(l10n.reminderMaxRepeats),
+        actions: [
+          for (final v in _options)
+            CupertinoActionSheetAction(
+              onPressed: () => Navigator.of(ctx).pop(v),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(_label(context, v)),
+                  if (v == value) ...[
+                    const SizedBox(width: 8),
+                    const Icon(CupertinoIcons.checkmark, size: 18),
+                  ],
+                ],
+              ),
+            ),
+        ],
+        cancelButton: CupertinoActionSheetAction(
+          onPressed: () => Navigator.of(ctx).pop(),
+          child: Text(l10n.cancel),
+        ),
+      ),
+    );
+    if (picked != null && picked != value) await onChanged(picked);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
     return ListTile(
       title: Text(l10n.reminderMaxRepeats),
-      trailing: DropdownButton<int>(
-        value: value,
-        items: const [1, 2, 3, 5, 10]
-            .map((v) => DropdownMenuItem(value: v, child: Text('$v')))
-            .toList(),
-        onChanged: (v) {
-          if (v != null) onChanged(v);
-        },
+      onTap: () => _pick(context),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            _label(context, value),
+            style: TextStyle(color: scheme.primary, fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(width: 4),
+          Icon(CupertinoIcons.chevron_down, size: 16, color: scheme.onSurfaceVariant),
+        ],
       ),
     );
   }

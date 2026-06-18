@@ -2,6 +2,7 @@ import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kopfampel/core/database/app_database.dart';
 import 'package:kopfampel/core/database/seeders/default_categories.dart';
+import 'package:kopfampel/core/database/tables/app_settings.dart';
 import 'package:kopfampel/core/domain/severity.dart';
 
 void main() {
@@ -22,7 +23,7 @@ void main() {
       expect(settings.windowStartMinutes, 18 * 60);
       expect(settings.windowEndMinutes, 22 * 60);
       expect(settings.repeatEnabled, true);
-      expect(settings.maxRepeatsPerDay, 3);
+      expect(settings.maxRepeatsPerDay, kAlwaysRepeats);
       expect(settings.notificationsEnabled, true);
       expect(settings.onboardingComplete, false);
     });

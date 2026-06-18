@@ -158,6 +158,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get reminderMaxRepeats => 'Max. Wiederholungen pro Tag';
 
   @override
+  String get reminderMaxRepeatsAlways => 'Immer';
+
+  @override
   String get minutesSuffix => 'Min.';
 
   @override

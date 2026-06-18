@@ -25,7 +25,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -33,19 +33,27 @@ class AppDatabase extends _$AppDatabase {
           await m.createAll();
           await _seedSettings();
         },
-        // v1 → v2 reshapes tags from a hard-coded `kind` into user-defined
-        // categories. Per product decision this is a clean reset: data is
-        // restored afterwards via JSON import (the importer still reads the
-        // old export format). We drop every table and rebuild the schema.
         onUpgrade: (m, from, to) async {
-          await m.deleteTable(entryTags.actualTableName);
-          await m.deleteTable(entries.actualTableName);
-          await m.deleteTable(tags.actualTableName);
-          await m.deleteTable(categories.actualTableName);
-          await m.deleteTable(notificationPrompts.actualTableName);
-          await m.deleteTable(appSettings.actualTableName);
-          await m.createAll();
-          await _seedSettings();
+          // v1 → v2 reshapes tags from a hard-coded `kind` into user-defined
+          // categories. Per product decision this is a clean reset: data is
+          // restored afterwards via JSON import (the importer still reads the
+          // old export format). We drop every table and rebuild the schema.
+          if (from < 2) {
+            await m.deleteTable(entryTags.actualTableName);
+            await m.deleteTable(entries.actualTableName);
+            await m.deleteTable(tags.actualTableName);
+            await m.deleteTable(categories.actualTableName);
+            await m.deleteTable(notificationPrompts.actualTableName);
+            await m.deleteTable(appSettings.actualTableName);
+            await m.createAll();
+            await _seedSettings();
+          } else if (from < 3) {
+            // v2 → v3 keeps all data; it only adopts the new "always repeat"
+            // default for the daily reminder cap.
+            await (update(appSettings)..where((s) => s.id.equals(0))).write(
+              const AppSettingsCompanion(maxRepeatsPerDay: Value(kAlwaysRepeats)),
+            );
+          }
         },
         beforeOpen: (details) async {
           // Enforce foreign keys so deleting a category cascades to its tags

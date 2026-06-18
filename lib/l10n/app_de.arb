@@ -52,6 +52,7 @@
   "reminderRepeatDelay": "Abstand der Wiederholungen",
   "reminderRepeatDelayDescription": "Die App wartet zufällig in diesem Bereich, bevor sie erneut fragt.",
   "reminderMaxRepeats": "Max. Wiederholungen pro Tag",
+  "reminderMaxRepeatsAlways": "Immer",
   "minutesSuffix": "Min.",
   "dataSection": "Daten",
   "manageCategories": "Kategorien & Tags",

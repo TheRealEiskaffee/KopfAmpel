@@ -1,5 +1,10 @@
 import 'package:drift/drift.dart';
 
+/// Sentinel for "always repeat" (no daily cap). Far above any reachable per-day
+/// count, so the scheduler's `repeatCount >= maxRepeatsPerDay` check never trips
+/// — repeats stay bounded by the daily reminder window.
+const int kAlwaysRepeats = 999;
+
 /// Singleton row (id = 0) holding all user-configurable preferences.
 @DataClassName('AppSettingsRow')
 class AppSettings extends Table {
@@ -12,7 +17,7 @@ class AppSettings extends Table {
   BoolColumn get repeatEnabled => boolean().withDefault(const Constant(true))();
   IntColumn get repeatMinDelayMin => integer().withDefault(const Constant(30))();
   IntColumn get repeatMaxDelayMin => integer().withDefault(const Constant(120))();
-  IntColumn get maxRepeatsPerDay => integer().withDefault(const Constant(3))();
+  IntColumn get maxRepeatsPerDay => integer().withDefault(const Constant(kAlwaysRepeats))();
 
   /// 'de' | 'en' | null (= follow system).
   TextColumn get locale => text().nullable()();

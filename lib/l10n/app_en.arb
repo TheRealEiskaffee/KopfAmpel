@@ -52,6 +52,7 @@
   "reminderRepeatDelay": "Delay between repeats",
   "reminderRepeatDelayDescription": "The app waits a random amount inside this range before asking again.",
   "reminderMaxRepeats": "Max repeats per day",
+  "reminderMaxRepeatsAlways": "Always",
   "minutesSuffix": "min",
   "dataSection": "Data",
   "manageCategories": "Categories & tags",
