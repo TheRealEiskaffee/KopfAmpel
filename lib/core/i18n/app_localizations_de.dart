@@ -399,19 +399,24 @@ class AppLocalizationsDe extends AppLocalizations {
   String get statsDistribution => 'Verteilung';
 
   @override
-  String get statsAssociationsTitle => 'Zusammenhänge bei Kopfschmerzen';
+  String get statsAssociationsTitle => 'Risikofaktoren bei Kopfschmerzen';
 
   @override
   String get statsAssociationsHint =>
-      'Welche Tags an deinen Kopfschmerz-Tagen am häufigsten dabei waren.';
+      'Tags, die an den Tagen mit ihnen dein Kopfschmerz-Risiko erhöht haben (im Vergleich zu deinem Schnitt).';
 
   @override
   String get statsAssociationsEmpty =>
-      'Noch keine Kopfschmerz-Tage mit Tags in diesem Zeitraum.';
+      'Noch nicht genug Daten, um Tag-Faktoren verlässlich zu erkennen.';
 
   @override
-  String statsAssociationsLead(String tag, String category, int percent) {
-    return '$tag ($category) war an $percent% deiner Kopfschmerz-Tage dabei – dein stärkster Zusammenhang.';
+  String statsAssociationsLead(
+    String tag,
+    String category,
+    int percent,
+    String factor,
+  ) {
+    return 'An Tagen mit $tag ($category) hattest du zu $percent% Kopfschmerzen – $factor× so oft wie im Schnitt.';
   }
 
   @override
@@ -576,7 +581,7 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get statsLongestStreak => 'Längste kopfschmerz-freie Strähne';
+  String get statsLongestStreak => 'Längste freie Strähne';
 
   @override
   String get statsCurrentStreak => 'Aktuelle Strähne';

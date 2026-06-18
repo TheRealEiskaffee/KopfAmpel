@@ -142,15 +142,16 @@
     }
   },
   "statsDistribution": "Verteilung",
-  "statsAssociationsTitle": "Zusammenhänge bei Kopfschmerzen",
-  "statsAssociationsHint": "Welche Tags an deinen Kopfschmerz-Tagen am häufigsten dabei waren.",
-  "statsAssociationsEmpty": "Noch keine Kopfschmerz-Tage mit Tags in diesem Zeitraum.",
-  "statsAssociationsLead": "{tag} ({category}) war an {percent}% deiner Kopfschmerz-Tage dabei – dein stärkster Zusammenhang.",
+  "statsAssociationsTitle": "Risikofaktoren bei Kopfschmerzen",
+  "statsAssociationsHint": "Tags, die an den Tagen mit ihnen dein Kopfschmerz-Risiko erhöht haben (im Vergleich zu deinem Schnitt).",
+  "statsAssociationsEmpty": "Noch nicht genug Daten, um Tag-Faktoren verlässlich zu erkennen.",
+  "statsAssociationsLead": "An Tagen mit {tag} ({category}) hattest du zu {percent}% Kopfschmerzen – {factor}× so oft wie im Schnitt.",
   "@statsAssociationsLead": {
     "placeholders": {
       "tag": { "type": "String" },
       "category": { "type": "String" },
-      "percent": { "type": "int" }
+      "percent": { "type": "int" },
+      "factor": { "type": "String" }
     }
   },
   "statsNothing": "Noch keine Daten in diesem Zeitraum.",
@@ -214,7 +215,7 @@
       "value": { "type": "String" }
     }
   },
-  "statsLongestStreak": "Längste kopfschmerz-freie Strähne",
+  "statsLongestStreak": "Längste freie Strähne",
   "statsCurrentStreak": "Aktuelle Strähne",
   "statsStreakDays": "{count, plural, =0{0 Tage} =1{1 Tag} other{{count} Tage}}",
   "@statsStreakDays": {

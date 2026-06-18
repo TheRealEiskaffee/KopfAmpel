@@ -397,19 +397,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statsDistribution => 'Distribution';
 
   @override
-  String get statsAssociationsTitle => 'Linked to your headaches';
+  String get statsAssociationsTitle => 'Headache risk factors';
 
   @override
   String get statsAssociationsHint =>
-      'Which tags showed up most often on your headache days.';
+      'Tags that raised your headache risk on the days you logged them (vs. your average).';
 
   @override
   String get statsAssociationsEmpty =>
-      'No headache days with tags in this range yet.';
+      'Not enough data yet to spot tag factors reliably.';
 
   @override
-  String statsAssociationsLead(String tag, String category, int percent) {
-    return '$tag ($category) was present on $percent% of your headache days — your strongest link.';
+  String statsAssociationsLead(
+    String tag,
+    String category,
+    int percent,
+    String factor,
+  ) {
+    return 'On days with $tag ($category) you had headaches $percent% of the time — $factor× your average.';
   }
 
   @override
@@ -574,7 +579,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get statsLongestStreak => 'Longest headache-free streak';
+  String get statsLongestStreak => 'Longest free streak';
 
   @override
   String get statsCurrentStreak => 'Current streak';

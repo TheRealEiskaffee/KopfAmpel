@@ -211,7 +211,7 @@ class _MetricCard extends StatelessWidget {
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: highlight ? scheme.onPrimaryContainer : null,
                   ),
-              maxLines: 2,
+              maxLines: 3,
               overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 4),
@@ -560,7 +560,8 @@ class _LeadInsight extends StatelessWidget {
               l10n.statsAssociationsLead(
                 top.tagName,
                 top.category.name,
-                (top.share * 100).round(),
+                (top.probability * 100).round(),
+                top.lift.toStringAsFixed(1),
               ),
               style: Theme.of(context).textTheme.bodyMedium,
             ),
@@ -604,17 +605,41 @@ class _AssociationRow extends StatelessWidget {
                   style: theme.textTheme.bodyLarge,
                 ),
                 const SizedBox(height: 2),
-                Text(
-                  assoc.category.name,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
+                Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        assoc.category.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ),
+                    if (assoc.typicalSeverity != Severity.none) ...[
+                      const SizedBox(width: 8),
+                      Container(
+                        width: 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          color: _severityColor(assoc.typicalSeverity),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        _severityWord(context, assoc.typicalSeverity),
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
                 const SizedBox(height: 6),
                 LinearProgressIndicator(
-                  value: assoc.share.clamp(0.0, 1.0),
+                  value: assoc.probability.clamp(0.0, 1.0),
                   minHeight: 7,
                   borderRadius: BorderRadius.circular(4),
                   color: color,
@@ -628,11 +653,11 @@ class _AssociationRow extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                '${assoc.headacheCount}×',
+                '×${assoc.lift.toStringAsFixed(1)}',
                 style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
               ),
               Text(
-                '${(assoc.share * 100).round()}%',
+                '${(assoc.probability * 100).round()}%',
                 style: theme.textTheme.bodySmall,
               ),
             ],
@@ -641,4 +666,21 @@ class _AssociationRow extends StatelessWidget {
       ),
     );
   }
+}
+
+Color _severityColor(Severity s) => switch (s) {
+      Severity.green => AmpelColors.green,
+      Severity.yellow => AmpelColors.yellow,
+      Severity.red => AmpelColors.red,
+      Severity.none => AmpelColors.none,
+    };
+
+String _severityWord(BuildContext context, Severity s) {
+  final l10n = AppLocalizations.of(context);
+  return switch (s) {
+    Severity.green => l10n.severityGreen,
+    Severity.yellow => l10n.severityYellow,
+    Severity.red => l10n.severityRed,
+    Severity.none => l10n.severityNone,
+  };
 }

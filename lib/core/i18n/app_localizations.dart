@@ -803,26 +803,31 @@ abstract class AppLocalizations {
   /// No description provided for @statsAssociationsTitle.
   ///
   /// In de, this message translates to:
-  /// **'Zusammenhänge bei Kopfschmerzen'**
+  /// **'Risikofaktoren bei Kopfschmerzen'**
   String get statsAssociationsTitle;
 
   /// No description provided for @statsAssociationsHint.
   ///
   /// In de, this message translates to:
-  /// **'Welche Tags an deinen Kopfschmerz-Tagen am häufigsten dabei waren.'**
+  /// **'Tags, die an den Tagen mit ihnen dein Kopfschmerz-Risiko erhöht haben (im Vergleich zu deinem Schnitt).'**
   String get statsAssociationsHint;
 
   /// No description provided for @statsAssociationsEmpty.
   ///
   /// In de, this message translates to:
-  /// **'Noch keine Kopfschmerz-Tage mit Tags in diesem Zeitraum.'**
+  /// **'Noch nicht genug Daten, um Tag-Faktoren verlässlich zu erkennen.'**
   String get statsAssociationsEmpty;
 
   /// No description provided for @statsAssociationsLead.
   ///
   /// In de, this message translates to:
-  /// **'{tag} ({category}) war an {percent}% deiner Kopfschmerz-Tage dabei – dein stärkster Zusammenhang.'**
-  String statsAssociationsLead(String tag, String category, int percent);
+  /// **'An Tagen mit {tag} ({category}) hattest du zu {percent}% Kopfschmerzen – {factor}× so oft wie im Schnitt.'**
+  String statsAssociationsLead(
+    String tag,
+    String category,
+    int percent,
+    String factor,
+  );
 
   /// No description provided for @statsNothing.
   ///
@@ -1097,7 +1102,7 @@ abstract class AppLocalizations {
   /// No description provided for @statsLongestStreak.
   ///
   /// In de, this message translates to:
-  /// **'Längste kopfschmerz-freie Strähne'**
+  /// **'Längste freie Strähne'**
   String get statsLongestStreak;
 
   /// No description provided for @statsCurrentStreak.

@@ -15,25 +15,36 @@ extension StatsRangeX on StatsRange {
       };
 }
 
-/// One tag's association with headache days: how often it was logged on a day
-/// that had a headache, and on what share of all headache days it appeared.
+/// A tag treated as a headache risk factor: how much more likely a headache was
+/// on the days the tag was logged, compared with the overall base rate.
 /// Carries its [category] so the stats screen can label and colour it.
 class TagAssociation {
   const TagAssociation({
     required this.category,
     required this.tagName,
-    required this.headacheCount,
-    required this.share,
+    required this.daysWithTag,
+    required this.headacheDaysWithTag,
+    required this.probability,
+    required this.lift,
+    required this.typicalSeverity,
   });
 
   final Category category;
   final String tagName;
 
-  /// Number of headache days on which this tag was present.
-  final int headacheCount;
+  /// Days in range the tag was logged on, and how many of those had a headache.
+  final int daysWithTag;
+  final int headacheDaysWithTag;
 
-  /// [headacheCount] / total headache days, in 0–1.
-  final double share;
+  /// Shrunk P(headache | tag), 0–1 (Beta-Binomial posterior mean).
+  final double probability;
+
+  /// [probability] / base rate. > 1 means the tag raises headache risk.
+  final double lift;
+
+  /// Typical severity of the headaches on this tag's headache days
+  /// (Severity.none when there were none).
+  final Severity typicalSeverity;
 }
 
 class WeekdayStat {
@@ -76,9 +87,7 @@ class HeadacheStats {
   final int rangeDays;
   final Map<Severity, int> countBySeverity;
 
-  /// Tags ranked by how often they coincide with headache days, each labelled
-  /// with its category. This is the "what is associated with my headaches"
-  /// view.
+  /// Tags ranked by their headache risk factor (lift), strongest first.
   final List<TagAssociation> headacheAssociations;
 
   final List<WeekdayStat> weekdayStats;
@@ -154,19 +163,45 @@ HeadacheStats _computeStats({
     counts[s] = (counts[s] ?? 0) + 1;
   }
 
-  // Headache-day association: count tags only on days that had a headache.
+  // Days that had a headache (drives both the base rate and the tag factors).
   final headacheEntryIds = entries
       .where((e) => Severity.fromString(e.severity).hasHeadache)
       .map((e) => e.id)
       .toSet();
-  final totalHeadacheDays = headacheEntryIds.length;
 
-  final tagHeadacheCount = <int, int>{};
+  // Overall headache rate in the range — the base rate that the weekday
+  // forecast and tag factors are measured against / pulled toward.
+  final baseRate = entries.isEmpty ? 0.0 : headacheEntryIds.length / entries.length;
+
+  // Per-tag counts within the range: on how many days a tag was logged, how
+  // many of those were headache days, and the summed severity of those headache
+  // days (severity weight = enum index: green 1, yellow 2, red 3).
+  final severityById = <int, Severity>{
+    for (final e in entries) e.id as int: Severity.fromString(e.severity),
+  };
+  final tagDays = <int, int>{};
+  final tagHeadacheDays = <int, int>{};
+  final tagSeveritySum = <int, int>{};
   for (final et in allEntryTags) {
-    if (!headacheEntryIds.contains(et.entryId)) continue;
+    final eid = et.entryId as int;
+    final sev = severityById[eid];
+    if (sev == null) continue; // entry not in range
     final tag = tagById[et.tagId];
     if (tag == null) continue;
-    tagHeadacheCount[tag.id as int] = (tagHeadacheCount[tag.id as int] ?? 0) + 1;
+    final tid = tag.id as int;
+    tagDays[tid] = (tagDays[tid] ?? 0) + 1;
+    if (sev.hasHeadache) {
+      tagHeadacheDays[tid] = (tagHeadacheDays[tid] ?? 0) + 1;
+      tagSeveritySum[tid] = (tagSeveritySum[tid] ?? 0) + sev.index;
+    }
+  }
+
+  Severity typicalSeverityFor(int n, int sum) {
+    if (n == 0) return Severity.none;
+    final avg = sum / n;
+    if (avg < 1.5) return Severity.green;
+    if (avg < 2.5) return Severity.yellow;
+    return Severity.red;
   }
 
   Category categoryFor(int id) {
@@ -184,23 +219,38 @@ HeadacheStats _computeStats({
     );
   }
 
-  final headacheAssociations = tagHeadacheCount.entries
-      .map((e) {
-        final tag = tagById[e.key]!;
-        return TagAssociation(
-          category: categoryFor(tag.categoryId as int),
-          tagName: tag.name as String,
-          headacheCount: e.value,
-          share: totalHeadacheDays == 0 ? 0 : e.value / totalHeadacheDays,
-        );
-      })
-      .toList()
-    ..sort((a, b) {
-      final byCount = b.headacheCount.compareTo(a.headacheCount);
-      if (byCount != 0) return byCount;
-      return a.tagName.toLowerCase().compareTo(b.tagName.toLowerCase());
-    });
-  final topAssociations = headacheAssociations.take(8).toList();
+  // Tag risk factors. P(headache | tag) is shrunk toward the base rate with a
+  // Beta-Binomial prior (cautious on small samples); a tag needs a minimum
+  // number of observations to count at all, and tags are ranked by
+  // lift = P(headache | tag) / baseRate (> 1 = raises risk).
+  const double tagPriorStrength = 4;
+  const int minTagDays = 3;
+  final associations = <TagAssociation>[];
+  for (final e in tagDays.entries) {
+    final n = e.value;
+    if (n < minTagDays) continue;
+    final h = tagHeadacheDays[e.key] ?? 0;
+    final p = (h + baseRate * tagPriorStrength) / (n + tagPriorStrength);
+    final lift = baseRate <= 0 ? 1.0 : p / baseRate;
+    final tag = tagById[e.key]!;
+    associations.add(
+      TagAssociation(
+        category: categoryFor(tag.categoryId as int),
+        tagName: tag.name as String,
+        daysWithTag: n,
+        headacheDaysWithTag: h,
+        probability: p,
+        lift: lift,
+        typicalSeverity: typicalSeverityFor(h, tagSeveritySum[e.key] ?? 0),
+      ),
+    );
+  }
+  associations.sort((a, b) {
+    final byLift = b.lift.compareTo(a.lift);
+    if (byLift != 0) return byLift;
+    return b.daysWithTag.compareTo(a.daysWithTag);
+  });
+  final topAssociations = associations.take(8).toList();
 
   // Weekday distribution (1 = Monday … 7 = Sunday).
   final byWeekday = <int, (int total, int headache)>{
@@ -221,12 +271,25 @@ HeadacheStats _computeStats({
       ),
   ];
 
-  // Forecast for the next 7 days from per-weekday historical rate.
+  // Forecast for the next 7 days. A naive per-weekday rate is overconfident on
+  // small samples (one headache on the only recorded Friday reads as 100%). We
+  // use an empirical-Bayes (Beta-Binomial) posterior mean that shrinks each
+  // weekday toward the base rate: (headacheDays + baseRate·k) / (total + k).
+  // `k` acts as k pseudo-observations — a weekday only departs from the base
+  // rate once it has real evidence; weekdays with no data fall back to the base
+  // rate instead of 0%.
+  const double forecastPriorStrength = 3;
+  double weekdayProbability(int weekday) {
+    final ws = weekdayStats[weekday - 1];
+    return (ws.headacheDays + baseRate * forecastPriorStrength) /
+        (ws.total + forecastPriorStrength);
+  }
+
   final forecast = [
     for (var i = 1; i <= 7; i++)
       ForecastDay(
         date: today.add(Duration(days: i)),
-        probability: weekdayStats[today.add(Duration(days: i)).weekday - 1].rate,
+        probability: weekdayProbability(today.add(Duration(days: i)).weekday),
       ),
   ];
 
