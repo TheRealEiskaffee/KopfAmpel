@@ -33,6 +33,9 @@ class NotificationScheduler {
     await plugin.cancelAll();
 
     final today = dayKey(DateTime.now());
+    // Prune answered/expired prompts from earlier days so the table doesn't
+    // grow without bound; only today-and-forward rows are still relevant.
+    await db.notificationPromptsDao.deleteOlderThan(today);
     for (var i = 0; i < kScheduleHorizonDays; i++) {
       final day = today.add(Duration(days: i));
       final scheduledFor = _randomTimeInWindow(day, settings);

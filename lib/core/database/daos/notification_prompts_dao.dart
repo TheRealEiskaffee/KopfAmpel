@@ -16,13 +16,22 @@ class NotificationPromptsDao extends DatabaseAccessor<AppDatabase>
     required DateTime scheduledFor,
     required int platformId,
   }) {
-    return into(notificationPrompts).insert(
-      NotificationPromptsCompanion.insert(
-        dayKey: dayKey,
-        scheduledFor: scheduledFor,
-        platformId: platformId,
-      ),
-    );
+    // platformId is deterministic per (day, repeat), and rescheduleHorizon
+    // re-seeds the horizon on every app resume. Drop any stale row for this
+    // platformId first so we keep exactly one prompt per id — otherwise the
+    // table grows unbounded and promptByPlatformId would match many rows.
+    return transaction(() async {
+      await (delete(notificationPrompts)
+            ..where((p) => p.platformId.equals(platformId)))
+          .go();
+      return into(notificationPrompts).insert(
+        NotificationPromptsCompanion.insert(
+          dayKey: dayKey,
+          scheduledFor: scheduledFor,
+          platformId: platformId,
+        ),
+      );
+    });
   }
 
   /// Most recent (highest id) prompt for the given day. Multiple prompts per
@@ -37,8 +46,13 @@ class NotificationPromptsDao extends DatabaseAccessor<AppDatabase>
   }
 
   Future<NotificationPromptRow?> promptByPlatformId(int platformId) {
+    // Newest row wins and limit(1) keeps this safe even if an older install
+    // accumulated duplicate rows for this platformId before insertPrompt
+    // deduplicated — getSingleOrNull() would throw on more than one match.
     return (select(notificationPrompts)
-          ..where((p) => p.platformId.equals(platformId)))
+          ..where((p) => p.platformId.equals(platformId))
+          ..orderBy([(p) => OrderingTerm.desc(p.id)])
+          ..limit(1))
         .getSingleOrNull();
   }
 

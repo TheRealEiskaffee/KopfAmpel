@@ -34,41 +34,58 @@ void onBackgroundNotificationResponse(NotificationResponse response) {
 Future<void> _persistResponse(NotificationResponse response) async {
   final actionId = response.actionId;
   final platformId = response.id;
+
+  // The day is what actually matters for logging an entry, and the payload
+  // carries it directly — so we don't depend on the prompt row existing. The
+  // payload is the source of truth (timezone-correct); the platform id is only
+  // a last-ditch fallback as that mapping is lossy across timezones.
   final payload = response.payload ?? '';
   final dayMatch = RegExp(r'day=([0-9T:\-.]+)').firstMatch(payload);
-  if (dayMatch == null && platformId == null) return;
+  DateTime? day;
+  if (dayMatch != null) {
+    try {
+      day = dayKey(DateTime.parse(dayMatch.group(1)!));
+    } catch (_) {
+      // fall through to the platform-id fallback
+    }
+  }
+  day ??= platformId != null
+      ? dayKey(NotificationIds.dayFromPlatformId(platformId))
+      : null;
+  if (day == null) return;
+
+  final now = DateTime.now();
+  Severity? severity;
+  switch (actionId) {
+    case NotificationIds.actionNone:
+      severity = Severity.none;
+    case NotificationIds.actionLight:
+      severity = Severity.green;
+    case NotificationIds.actionMedium:
+      severity = Severity.yellow;
+    case NotificationIds.actionSevere:
+      severity = Severity.red;
+  }
 
   // Drift across isolates: open a fresh handle to the same DB.
   final db = AppDatabase();
   try {
+    // Best-effort bookkeeping on the scheduled-prompt row. It may be missing
+    // (e.g. pruned), so a failure here must never block writing the entry.
     final prompt = platformId != null
         ? await db.notificationPromptsDao.promptByPlatformId(platformId)
-        : await db.notificationPromptsDao.promptForDay(
-            dayKey(DateTime.parse(dayMatch!.group(1)!)),
-          );
-    if (prompt == null) return;
-    final day = prompt.dayKey;
-
-    final now = DateTime.now();
-    Severity? severity;
-    switch (actionId) {
-      case NotificationIds.actionNone:
-        severity = Severity.none;
-      case NotificationIds.actionLight:
-        severity = Severity.green;
-      case NotificationIds.actionMedium:
-        severity = Severity.yellow;
-      case NotificationIds.actionSevere:
-        severity = Severity.red;
+        : await db.notificationPromptsDao.promptForDay(day);
+    if (prompt != null) {
+      if (severity == null) {
+        await db.notificationPromptsDao.markShown(prompt.id, now);
+      } else {
+        await db.notificationPromptsDao
+            .markResponded(prompt.id, severity.value, now);
+      }
     }
 
-    if (severity == null) {
-      // Not one of our severity actions — just record that it was shown.
-      await db.notificationPromptsDao.markShown(prompt.id, now);
-      return;
-    }
-
-    await db.notificationPromptsDao.markResponded(prompt.id, severity.value, now);
+    // Not one of our severity actions — nothing to log.
+    if (severity == null) return;
 
     // Log the day at the chosen severity ('none' = a headache-free day). If an
     // entry already exists we leave it alone — the user has either curated it in

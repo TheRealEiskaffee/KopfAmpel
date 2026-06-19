@@ -167,6 +167,31 @@ void main() {
       expect(open.first.platformId, 1);
     });
 
+    test('re-inserting the same platformId keeps a single, current row', () async {
+      // rescheduleHorizon re-seeds the horizon on every app resume, so the same
+      // platformId is inserted repeatedly. Each insert must replace the prior
+      // row — otherwise promptByPlatformId matches many rows and throws, and the
+      // notification action silently fails to log an entry.
+      final day = DateTime(2026, 6, 17);
+      await db.notificationPromptsDao.insertPrompt(
+        dayKey: day,
+        scheduledFor: DateTime(2026, 6, 17, 9),
+        platformId: 99,
+      );
+      await db.notificationPromptsDao.insertPrompt(
+        dayKey: day,
+        scheduledFor: DateTime(2026, 6, 17, 14),
+        platformId: 99,
+      );
+
+      final all = await db.notificationPromptsDao.allForDay(day);
+      expect(all.where((p) => p.platformId == 99).length, 1);
+
+      final row = await db.notificationPromptsDao.promptByPlatformId(99);
+      expect(row, isNotNull);
+      expect(row!.scheduledFor, DateTime(2026, 6, 17, 14));
+    });
+
     test('bumpRepeat increments repeat count', () async {
       final day = DateTime(2026, 6, 17);
       final id = await db.notificationPromptsDao.insertPrompt(
