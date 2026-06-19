@@ -5,18 +5,20 @@ class NotificationStrings {
   const NotificationStrings({
     required this.title,
     required this.body,
-    required this.actionYes,
-    required this.actionNo,
-    required this.actionIgnore,
+    required this.actionNone,
+    required this.actionLight,
+    required this.actionMedium,
+    required this.actionSevere,
     required this.channelName,
     required this.channelDescription,
   });
 
   final String title;
   final String body;
-  final String actionYes;
-  final String actionNo;
-  final String actionIgnore;
+  final String actionNone;
+  final String actionLight;
+  final String actionMedium;
+  final String actionSevere;
   final String channelName;
   final String channelDescription;
 }

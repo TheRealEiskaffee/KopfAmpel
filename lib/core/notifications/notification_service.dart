@@ -7,6 +7,7 @@ import 'package:timezone/timezone.dart' as tz;
 
 import 'background_handler.dart';
 import 'notification_ids.dart';
+import 'notification_navigation.dart';
 import 'notification_strings.dart';
 
 class NotificationService {
@@ -35,20 +36,25 @@ class NotificationService {
       notificationCategories: [
         DarwinNotificationCategory(
           NotificationIds.iosCategoryId,
+          // Severity quick-answers, all handled silently in the background
+          // (no `foreground` option): each logs an entry for the day and
+          // dismisses the notification. iOS shows all four.
           actions: [
             DarwinNotificationAction.plain(
-              NotificationIds.actionYes,
-              strings.actionYes,
-              options: {DarwinNotificationActionOption.foreground},
+              NotificationIds.actionNone,
+              strings.actionNone,
             ),
             DarwinNotificationAction.plain(
-              NotificationIds.actionNo,
-              strings.actionNo,
+              NotificationIds.actionLight,
+              strings.actionLight,
             ),
             DarwinNotificationAction.plain(
-              NotificationIds.actionIgnore,
-              strings.actionIgnore,
-              options: {DarwinNotificationActionOption.destructive},
+              NotificationIds.actionMedium,
+              strings.actionMedium,
+            ),
+            DarwinNotificationAction.plain(
+              NotificationIds.actionSevere,
+              strings.actionSevere,
             ),
           ],
           options: {DarwinNotificationCategoryOption.hiddenPreviewShowTitle},
@@ -113,5 +119,19 @@ class NotificationService {
     // a meaningful boolean.
     final status = await Permission.notification.request();
     return status.isGranted;
+  }
+
+  /// If the app was cold-launched by tapping a notification's *body* (not an
+  /// action), returns that notification's day so the UI can open its entry
+  /// sheet. Returns null otherwise.
+  Future<DateTime?> notificationLaunchDay() async {
+    final details = await plugin.getNotificationAppLaunchDetails();
+    if (details?.didNotificationLaunchApp != true) return null;
+    final response = details!.notificationResponse;
+    final actionId = response?.actionId;
+    // An action (Yes/No/Ignore) is handled in the background — only a plain
+    // body tap should open the sheet.
+    if (actionId != null && actionId.isNotEmpty) return null;
+    return dayFromPayload(response?.payload);
   }
 }

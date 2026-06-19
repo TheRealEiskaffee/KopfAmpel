@@ -28,9 +28,10 @@ NotificationStrings notificationStringsOf(BuildContext context) {
   return NotificationStrings(
     title: l10n.notificationTitle,
     body: l10n.notificationBody,
-    actionYes: l10n.notificationActionYes,
-    actionNo: l10n.notificationActionNo,
-    actionIgnore: l10n.notificationActionIgnore,
+    actionNone: l10n.notificationActionNone,
+    actionLight: l10n.severityGreen,
+    actionMedium: l10n.severityYellow,
+    actionSevere: l10n.severityRed,
     channelName: l10n.notificationChannelName,
     channelDescription: l10n.notificationChannelDescription,
   );

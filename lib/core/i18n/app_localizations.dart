@@ -296,6 +296,12 @@ abstract class AppLocalizations {
   /// **'Ignorieren'**
   String get notificationActionIgnore;
 
+  /// No description provided for @notificationActionNone.
+  ///
+  /// In de, this message translates to:
+  /// **'Kein'**
+  String get notificationActionNone;
+
   /// No description provided for @notificationChannelName.
   ///
   /// In de, this message translates to:

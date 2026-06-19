@@ -111,6 +111,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get notificationActionIgnore => 'Ignorieren';
 
   @override
+  String get notificationActionNone => 'Kein';
+
+  @override
   String get notificationChannelName => 'Tägliche Erinnerung';
 
   @override

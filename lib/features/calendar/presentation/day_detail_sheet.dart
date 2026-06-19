@@ -326,7 +326,13 @@ class _SelectableColorChip extends StatelessWidget {
                 shape: BoxShape.circle,
               ),
             ),
-      label: Text(label),
+      // When selected the background is a light tint, so force the label to the
+      // same dark shade as the checkmark — otherwise it's invisible in dark mode
+      // (light text on a light fill).
+      label: Text(
+        label,
+        style: selected ? TextStyle(color: checkColor) : null,
+      ),
       onSelected: (_) => onSelected(),
       ),
     );

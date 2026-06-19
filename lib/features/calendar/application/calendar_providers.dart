@@ -29,3 +29,7 @@ final entryByDayProvider =
     FutureProvider.family<HeadacheEntry?, DateTime>((ref, date) async {
   return ref.watch(entriesRepositoryProvider).findByDate(date);
 });
+
+/// Set when a notification body tap should open a specific day's entry sheet.
+/// The calendar watches this and opens the sheet, then clears it.
+final pendingNotificationDayProvider = StateProvider<DateTime?>((_) => null);

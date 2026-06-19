@@ -38,6 +38,7 @@
   "notificationActionYes": "Yes",
   "notificationActionNo": "No",
   "notificationActionIgnore": "Ignore",
+  "notificationActionNone": "None",
   "notificationChannelName": "Daily reminder",
   "notificationChannelDescription": "Reminder to log your headaches.",
   "reminderSection": "Reminder",

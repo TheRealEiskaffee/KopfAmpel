@@ -86,6 +86,22 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     // Trigger one-shot startup work (seed default tags). We don't need the value.
     ref.watch(bootstrapProvider);
 
+    // A notification body tap routes here with the day to open. Clear it first
+    // so it fires once, then open that day's entry sheet.
+    ref.listen<DateTime?>(pendingNotificationDayProvider, (prev, next) {
+      if (next == null) return;
+      ref.read(pendingNotificationDayProvider.notifier).state = null;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        final key = dayKey(next);
+        setState(() {
+          _selectedDay = key;
+          _focusedDay = next;
+        });
+        DayDetailSheet.show(context, key);
+      });
+    });
+
     final severityAsync = ref.watch(monthSeverityProvider(_focusedDay));
     final severityByDay = severityAsync.maybeWhen(
       data: (m) => m,

@@ -145,7 +145,11 @@ class NotificationScheduler {
       strings.body,
       tz.TZDateTime.from(scheduledFor, tz.local),
       details,
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      // Inexact: a daily reminder doesn't need second-precision (the time is
+      // already randomised across a multi-hour window), and inexact alarms work
+      // without the "exact alarm" permission — so scheduling can't fail on
+      // Android 12+ when that permission isn't granted.
+      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
       payload: 'day=${day.toIso8601String()}',
@@ -169,21 +173,23 @@ class NotificationScheduler {
         importance: Importance.high,
         priority: Priority.high,
         category: AndroidNotificationCategory.reminder,
+        // Android shows at most ~3 action buttons, so we offer Kein / Leicht /
+        // Stark (iOS additionally has Mittel). All handled silently in the
+        // background (no showsUserInterface): each logs the day and dismisses.
         actions: [
           AndroidNotificationAction(
-            NotificationIds.actionYes,
-            strings.actionYes,
-            showsUserInterface: true,
+            NotificationIds.actionNone,
+            strings.actionNone,
             cancelNotification: true,
           ),
           AndroidNotificationAction(
-            NotificationIds.actionNo,
-            strings.actionNo,
+            NotificationIds.actionLight,
+            strings.actionLight,
             cancelNotification: true,
           ),
           AndroidNotificationAction(
-            NotificationIds.actionIgnore,
-            strings.actionIgnore,
+            NotificationIds.actionSevere,
+            strings.actionSevere,
             cancelNotification: true,
           ),
         ],

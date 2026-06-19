@@ -7,9 +7,12 @@ class NotificationIds {
   static const String androidChannelId = 'kopfampel_daily';
   static const String iosCategoryId = 'kopfampel_daily';
 
-  static const String actionYes = 'kopfampel.action.yes';
-  static const String actionNo = 'kopfampel.action.no';
-  static const String actionIgnore = 'kopfampel.action.ignore';
+  // Severity quick-answers. Each logs an entry of that severity for the day
+  // ('none' = a headache-free day).
+  static const String actionNone = 'kopfampel.action.none';
+  static const String actionLight = 'kopfampel.action.light';
+  static const String actionMedium = 'kopfampel.action.medium';
+  static const String actionSevere = 'kopfampel.action.severe';
 
   /// 10 platform-ids per day (1 initial + up to 9 repeats).
   static const int idsPerDay = 10;

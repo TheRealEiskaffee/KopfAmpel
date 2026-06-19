@@ -1,11 +1,18 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import '../core/database/converters.dart';
+import '../core/notifications/notification_navigation.dart';
 import '../core/notifications/notification_providers.dart';
+import '../features/calendar/application/calendar_providers.dart';
 
 /// Drives the notification lifecycle from the app's UI: initialises the
 /// plugin once, then refreshes the schedule every time the app comes back
-/// to foreground. Sits inside MaterialApp so localisations are available.
+/// to foreground. Also routes a notification *body* tap to that day's entry
+/// sheet. Sits inside MaterialApp so localisations are available.
 class NotificationBootstrapper extends ConsumerStatefulWidget {
   const NotificationBootstrapper({required this.child, super.key});
 
@@ -18,11 +25,14 @@ class NotificationBootstrapper extends ConsumerStatefulWidget {
 class _NotificationBootstrapperState extends ConsumerState<NotificationBootstrapper>
     with WidgetsBindingObserver {
   bool _initialized = false;
+  StreamSubscription<DateTime>? _tapSub;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    // Notification body taps while the app is running.
+    _tapSub = notificationTapStream.listen(_openDay);
   }
 
   @override
@@ -43,8 +53,16 @@ class _NotificationBootstrapperState extends ConsumerState<NotificationBootstrap
 
   @override
   void dispose() {
+    _tapSub?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  /// Switches to the calendar and asks it to open the given day's entry sheet.
+  void _openDay(DateTime day) {
+    if (!mounted) return;
+    GoRouter.of(context).go('/calendar');
+    ref.read(pendingNotificationDayProvider.notifier).state = dayKey(day);
   }
 
   Future<void> _bootstrap() async {
@@ -57,6 +75,10 @@ class _NotificationBootstrapperState extends ConsumerState<NotificationBootstrap
     // shows the system dialog at the wrong moment (or not at all, since the
     // request only triggers once per install).
     await ref.read(notificationSchedulerProvider).rescheduleHorizon(strings: strings);
+
+    // Cold-launched by tapping a notification body? Open that day's sheet.
+    final launchDay = await service.notificationLaunchDay();
+    if (launchDay != null && mounted) _openDay(launchDay);
   }
 
   Future<void> _refresh() async {

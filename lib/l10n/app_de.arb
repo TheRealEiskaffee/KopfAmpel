@@ -38,6 +38,7 @@
   "notificationActionYes": "Ja",
   "notificationActionNo": "Nein",
   "notificationActionIgnore": "Ignorieren",
+  "notificationActionNone": "Kein",
   "notificationChannelName": "Tägliche Erinnerung",
   "notificationChannelDescription": "Erinnerung, deine Kopfschmerzen einzutragen.",
   "reminderSection": "Erinnerung",
