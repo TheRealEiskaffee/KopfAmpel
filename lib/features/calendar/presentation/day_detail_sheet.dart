@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,6 +14,7 @@ import '../../../core/domain/entry.dart';
 import '../../../core/domain/severity.dart';
 import '../../../core/domain/tag.dart';
 import '../../../core/i18n/app_localizations.dart';
+import '../../../core/notifications/notification_providers.dart';
 import '../../../widgets/confirm_dialog.dart';
 import '../application/calendar_providers.dart';
 
@@ -67,6 +70,8 @@ class _DayDetailSheetState extends ConsumerState<DayDetailSheet> {
   }
 
   Future<void> _save() async {
+    final strings = notificationStringsOf(context);
+    final scheduler = ref.read(notificationSchedulerProvider);
     final tags = _selectedTagIds
         .map((id) => Tag(id: id, name: '', categoryId: 0))
         .toList();
@@ -78,11 +83,15 @@ class _DayDetailSheetState extends ConsumerState<DayDetailSheet> {
           tags: tags,
         );
     ref.invalidate(entryByDayProvider(widget.date));
+    // Now that the day is logged, drop its remaining pre-scheduled reminders.
+    unawaited(scheduler.rescheduleHorizon(strings: strings));
     if (mounted) Navigator.of(context).pop();
   }
 
   Future<void> _delete() async {
     final l10n = AppLocalizations.of(context);
+    final strings = notificationStringsOf(context);
+    final scheduler = ref.read(notificationSchedulerProvider);
     final ok = await showConfirmDialog(
       context,
       title: l10n.deleteEntryTitle,
@@ -93,6 +102,8 @@ class _DayDetailSheetState extends ConsumerState<DayDetailSheet> {
     if (!ok) return;
     await ref.read(entriesRepositoryProvider).deleteByDate(widget.date);
     ref.invalidate(entryByDayProvider(widget.date));
+    // Entry gone — let this day be reminded about again.
+    unawaited(scheduler.rescheduleHorizon(strings: strings));
     if (mounted) Navigator.of(context).pop();
   }
 

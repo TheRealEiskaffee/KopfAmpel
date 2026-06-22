@@ -85,7 +85,6 @@ class _NotificationBootstrapperState extends ConsumerState<NotificationBootstrap
     if (!mounted) return;
     final strings = notificationStringsOf(context);
     final scheduler = ref.read(notificationSchedulerProvider);
-    await scheduler.recoverOpenPrompts(strings: strings);
     await scheduler.rescheduleHorizon(strings: strings);
 
     // A severity tapped from a notification is written by the background

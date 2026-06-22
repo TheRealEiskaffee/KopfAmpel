@@ -27,6 +27,15 @@ class EntriesDao extends DatabaseAccessor<AppDatabase> with _$EntriesDaoMixin {
 
   Stream<List<EntryRow>> watchAll() => select(entries).watch();
 
+  /// Day-keys (local midnight) that already have an entry within the inclusive
+  /// range — used by the scheduler to skip reminding on already-logged days.
+  Future<Set<DateTime>> loggedDaysBetween(DateTime start, DateTime end) async {
+    final rows = await (select(entries)
+          ..where((e) => e.date.isBetweenValues(dayKey(start), dayKey(end))))
+        .get();
+    return rows.map((r) => dayKey(r.date)).toSet();
+  }
+
   Stream<List<EntryRow>> watchBetween(DateTime start, DateTime end) {
     final q = select(entries)
       ..where((e) => e.date.isBetweenValues(dayKey(start), dayKey(end)))

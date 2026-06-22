@@ -108,4 +108,18 @@ Future<void> _persistResponse(NotificationResponse response) async {
   } finally {
     await db.close();
   }
+
+  // The user answered, so silence the rest of today's reminders. (The next
+  // reschedule also skips logged days, but cancelling now stops any remaining
+  // pre-scheduled reminder from firing before the app is reopened.)
+  if (severity != null) {
+    try {
+      final plugin = FlutterLocalNotificationsPlugin();
+      for (var r = 0; r < NotificationIds.idsPerDay; r++) {
+        await plugin.cancel(id: NotificationIds.platformIdFor(day, repeat: r));
+      }
+    } catch (_) {
+      // Best-effort — never let cancellation failures surface.
+    }
+  }
 }
