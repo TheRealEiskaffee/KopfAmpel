@@ -143,18 +143,16 @@ class NotificationScheduler {
     final details = _details(strings);
 
     await plugin.zonedSchedule(
-      platformId,
-      strings.title,
-      strings.body,
-      tz.TZDateTime.from(scheduledFor, tz.local),
-      details,
+      id: platformId,
+      title: strings.title,
+      body: strings.body,
+      scheduledDate: tz.TZDateTime.from(scheduledFor, tz.local),
+      notificationDetails: details,
       // Inexact: a daily reminder doesn't need second-precision (the time is
       // already randomised across a multi-hour window), and inexact alarms work
       // without the "exact alarm" permission — so scheduling can't fail on
       // Android 12+ when that permission isn't granted.
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
       payload: 'day=${day.toIso8601String()}',
     );
 

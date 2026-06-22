@@ -63,7 +63,7 @@ class NotificationService {
     );
 
     await plugin.initialize(
-      InitializationSettings(android: androidInit, iOS: darwinInit),
+      settings: InitializationSettings(android: androidInit, iOS: darwinInit),
       onDidReceiveNotificationResponse: onForegroundNotificationResponse,
       onDidReceiveBackgroundNotificationResponse: onBackgroundNotificationResponse,
     );

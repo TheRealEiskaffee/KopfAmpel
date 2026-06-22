@@ -87,6 +87,15 @@ class _NotificationBootstrapperState extends ConsumerState<NotificationBootstrap
     final scheduler = ref.read(notificationSchedulerProvider);
     await scheduler.recoverOpenPrompts(strings: strings);
     await scheduler.rescheduleHorizon(strings: strings);
+
+    // A severity tapped from a notification is written by the background
+    // isolate through its own DB connection, so this already-running app
+    // instance gets no change notification and its cached entry queries stay
+    // stale (the day sheet shows "no entry" until a restart). Re-read entry
+    // data on every resume so such entries appear immediately.
+    if (!mounted) return;
+    ref.invalidate(entryByDayProvider);
+    ref.invalidate(monthSeverityProvider);
   }
 
   @override
